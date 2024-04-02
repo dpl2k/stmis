@@ -563,7 +563,7 @@ const AdminPage = () => {
       />
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={handleCloseSnackbar}
       >
         <Alert
