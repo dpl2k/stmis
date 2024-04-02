@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import AdminPage from './pages/AdminPage';
+import RestaurantPage from './pages/RestaurantPage';
+import Navbar from './components/NavBar';
 
-function App() {
+const Redirector = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/restaurant");
+    }
+  }, [location, navigate]);
+
+  return null;
+};
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Redirector />
+      <Routes>
+        <Route path="/" element={<RestaurantPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/restaurant" element={<RestaurantPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
