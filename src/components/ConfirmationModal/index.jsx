@@ -26,8 +26,8 @@ const ConfirmationModal = ({ open, message, onConfirm, onCancel }) => {
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button onClick={onConfirm} color="primary" autoFocus>
+        <Button onClick={onCancel} color="error" variant="contained">Cancel</Button>
+        <Button onClick={onConfirm} color="primary" variant="contained">
           Confirm
         </Button>
       </DialogActions>

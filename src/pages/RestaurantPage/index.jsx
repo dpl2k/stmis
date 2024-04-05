@@ -8,6 +8,8 @@ import {
   Box,
   Grid,
   OutlinedInput,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import DishTable from "../../components/DishTable";
 import { getAllRestaurants, getCurrentMenu } from "../../api";
@@ -17,22 +19,40 @@ const RestaurantPage = () => {
   const [menuType, setMenuType] = useState("");
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [dishes, setDishes] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
     const fetchRestaurants = async () => {
-      const data = await getAllRestaurants();
-      setRestaurants(data.result);
+      try {
+        const data = await getAllRestaurants();
+        setRestaurants(data.result);
+      } catch (error) {
+        setSnackbarMessage("Failed to get restaurants. Please wait and try again.");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
     };
     fetchRestaurants();
   }, []);
 
+  const handleCloseSnackbar = (reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   const handleApply = async () => {
-    console.log(typeof selectedRestaurant);
-    console.log(typeof menuType);
-    const menuTypeNumber = Number(menuType);
-    console.log(typeof menuTypeNumber);
-    const data = await getCurrentMenu(selectedRestaurant, menuTypeNumber);
-    setDishes(data);
+    try {
+      const data = await getCurrentMenu(selectedRestaurant, menuType);
+      setDishes(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get menu items. Please try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
   };
 
   return (
@@ -73,8 +93,8 @@ const RestaurantPage = () => {
                   onChange={(e) => setMenuType(e.target.value)}
                   input={<OutlinedInput label="Menu Type" />}
                 >
-                  <MenuItem value="1">POS</MenuItem>
-                  <MenuItem value="2">Delivery</MenuItem>
+                  <MenuItem value="DineIn">DineIn</MenuItem>
+                  <MenuItem value="Delivery">Delivery</MenuItem>
                 </Select>
               </FormControl>
               <Button
@@ -83,6 +103,7 @@ const RestaurantPage = () => {
                 onClick={() => {
                   setSelectedRestaurant("");
                   setMenuType("");
+                  setDishes([]);
                 }}
               >
                 Clear Filter
@@ -94,7 +115,20 @@ const RestaurantPage = () => {
           </Grid>
         </Grid>
       </Box>
-      <DishTable dishes={dishes} />
+      <DishTable dishes={dishes} isAdmin={false}/>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
