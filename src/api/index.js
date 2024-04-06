@@ -102,7 +102,7 @@ export const addNewDish = async (dish) => {
 };
 
 export const updateDish = async (dishId, dishData) => {
-    const response = await fetch(`${API_URL}/dishes?${dishId}`, {
+    const response = await fetch(`${API_URL}/dishes/${dishId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dishData),
@@ -111,7 +111,7 @@ export const updateDish = async (dishId, dishData) => {
 };
 
 export const deleteDish = async (dishId) => {
-    const response = await fetch(`${API_URL}/dishes?${dishId}`, { method: 'DELETE' });
+    const response = await fetch(`${API_URL}/dishes/${dishId}`, { method: 'DELETE' });
     return response.json();
 };
 

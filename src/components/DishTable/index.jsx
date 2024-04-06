@@ -17,6 +17,8 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Description</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Allergy</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Price</TableCell>
+                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Type</TableCell>
+                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Delivery Type</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Status</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Selling Date</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Category</TableCell>
@@ -34,16 +36,18 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                             </TableCell>
                             {/* <TableCell>{dish.dishId}</TableCell> */}
                             <TableCell>{dish.dishName}</TableCell>
-                            <TableCell>{dish.shortName}</TableCell>
-                            <TableCell>{dish.englishName}</TableCell>
-                            <TableCell>{dish.koreanName}</TableCell>
-                            <TableCell>{dish.description}</TableCell>
-                            <TableCell>{dish.allergy}</TableCell>
+                            <TableCell>{dish.shortName ? dish.shortName : "N/A"}</TableCell>
+                            <TableCell>{dish.englishName ? dish.englishName : "N/A"}</TableCell>
+                            <TableCell>{dish.koreanName ? dish.koreanName : "N/A"}</TableCell>
+                            <TableCell>{dish.description ? dish.description: "N/A"}</TableCell>
+                            <TableCell>{dish.allergy ? dish.allergy : "N/A"}</TableCell>
                             <TableCell>{dish.price}</TableCell>
+                            <TableCell>{dish.dineInType ? dish.dineInType : "N/A"}</TableCell>
+                            <TableCell>{dish.deliveryType ? dish.deliveryType : "N/A"}</TableCell>
                             <TableCell>{dish.isAvailable ? "In stock" : "Out of stock"}</TableCell>
                             <TableCell>{(dish.sellingDate !== null) ? new Date(dish.sellingDate).toLocaleDateString() : "N/A"}</TableCell>
-                            <TableCell>{dish.dineInCategory.categoryName}</TableCell>
-                            <TableCell>{dish.deliveryCategory.categoryName}</TableCell>
+                            <TableCell>{dish.dineInCategory ? dish.dineInCategory.categoryName: "N/A"}</TableCell>
+                            <TableCell>{dish.deliveryCategory ? dish.deliveryCategory.categoryName: "N/A"}</TableCell>
                             {isAdmin && (
                                 <TableCell>
                                     <Box display="flex">

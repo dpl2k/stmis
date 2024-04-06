@@ -115,7 +115,6 @@ const DeliveryCategoryPage = () => {
 
     const handleEdit = (categoryId) => {
         const deliveryCategoryToEdit = deliveryCategories.find(deliveryCategory => deliveryCategory.categoryId === categoryId);
-        console.log(deliveryCategoryToEdit);
         if (deliveryCategoryToEdit) {
             setDeliveryCategoryForm({
                 categoryName: deliveryCategoryToEdit.categoryName,
@@ -152,7 +151,6 @@ const DeliveryCategoryPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hihihi:--------", deliveryCategoryForm);
                 const result = await addNewDeliveryCategory(deliveryCategoryForm);
                 if (result.statusCode !== 200) {
                     throw new Error("Failed to add new dineInCategory");
@@ -164,7 +162,6 @@ const DeliveryCategoryPage = () => {
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
 
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to add new dineInCategory");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
@@ -176,7 +173,6 @@ const DeliveryCategoryPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hahahha:--------", deliveryCategoryForm);
                 const result = await updateDeliveryCategory(editDeliveryCategoryId, deliveryCategoryForm);
                 if (result.statusCode !== 200) {
                     throw new Error("Failed to update dineInCategory");
@@ -187,7 +183,6 @@ const DeliveryCategoryPage = () => {
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to update dineInCategory");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);

@@ -109,7 +109,6 @@ const RestaurantPage = () => {
 
   const handleEdit = (restaurantId) => {
     const restaurantToEdit = restaurants.find(restaurant => restaurant.restaurantId === restaurantId);
-    console.log(restaurantToEdit);
     if (restaurantToEdit) {
       setRestaurantForm({
         name: restaurantToEdit.name,
@@ -154,7 +153,6 @@ const RestaurantPage = () => {
         setOpenSnackbar(true);
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
       } catch (error) {
-        handleClose();
         setSnackbarMessage("Failed to add new restaurant");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
@@ -176,7 +174,6 @@ const RestaurantPage = () => {
         setOpenSnackbar(true);
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
       } catch (error) {
-        handleClose();
         setSnackbarMessage("Failed to update restaurant");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);

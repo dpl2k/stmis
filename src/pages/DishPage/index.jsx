@@ -8,7 +8,6 @@ import {
   InputLabel,
   Box,
   Grid,
-  OutlinedInput,
   TextField,
   FormControlLabel,
   Checkbox,
@@ -24,18 +23,18 @@ import CloseIcon from "@mui/icons-material/Close";
 import DishTable from "../../components/DishTable";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import {
-  getAllRestaurants,
-  getCurrentMenu,
+  getAllDishes,
   addNewDish,
   deleteDish,
-  updateDish
+  updateDish,
+  getAllDeliveryCategories,
+  getAllDineInCategories
 } from "../../api";
 
 const DishPage = () => {
-  const [restaurants, setRestaurants] = useState([]);
-  const [menuType, setMenuType] = useState("");
-  const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [dishes, setDishes] = useState([]);
+  const [deliveryCategories, setDeliveryCategories] = useState([]);
+  const [dineInCategories, setDineInCategories] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [editDishId, setEditDishId] = useState(null);
@@ -43,8 +42,9 @@ const DishPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [reloadTable, setReloadTable] = useState(false); // State variable to trigger table reload
+  const [originalCategoryName, setOriginalCategoryName] = useState("");
   const [errors, setErrors] = useState({});
-  const [areMenuItemsDisplayed, setAreMenuItemsDisplayed] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -54,30 +54,52 @@ const DishPage = () => {
   }
 
   useEffect(() => {
-    const fetchRestaurants = async () => {
+    const fetchDishes = async () => {
       try {
-        const data = await getAllRestaurants();
-        setRestaurants(data.result);
+        const data = await getAllDishes();
+        if (data.statusCode !== 200) {
+          throw new Error("Failed to get dishes. Please wait and try again.");
+        } 
+        setDishes(data.result);
       } catch (error) {
-        setSnackbarMessage("Failed to get restaurants. Please wait and try again.");
+        setSnackbarMessage("Failed to get dishes. Please wait and try again.");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
       }
     };
-    fetchRestaurants();
-  }, []);
+    fetchDishes();
+    fetchDeliveryCategories();
+    fetchDineInCategories();
+  }, [reloadTable]);
 
-  const handleApply = async () => {
+  const fetchDeliveryCategories = async () => {
     try {
-      const data = await getCurrentMenu(selectedRestaurant, menuType);
-      setDishes(data.result);
-      setAreMenuItemsDisplayed(data.result.length > 0);
+      const data = await getAllDeliveryCategories();
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get delivery categories. Please wait and try again.");
+      }
+      setDeliveryCategories(data.result);
     } catch (error) {
-      setSnackbarMessage("Failed to get menu items. Please try again.");
+      setSnackbarMessage("Failed to get delivery categories. Please wait and try again.");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
   };
+
+  const fetchDineInCategories = async () => {
+    try {
+      const data = await getAllDineInCategories();
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get dine in categories. Please wait and try again.");
+      }
+      setDineInCategories(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get dine in categories. Please wait and try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
+
 
   const handleDelete = (dishId) => {
     setSelectedDish(dishId);
@@ -89,9 +111,22 @@ const DishPage = () => {
   };
 
   const handleConfirmationModalConfirm = async () => {
-    await deleteDish(selectedDish);
-    handleApply(); // Refresh the dishes
-    setShowConfirmationModal(false);
+    try {
+      const result = await deleteDish(selectedDish);
+      if (result.statusCode !== 200) {
+        throw new Error("Failed to delete dish. Please try again.");
+      }
+      setShowConfirmationModal(false);
+      setSnackbarMessage("Successfully delete dish");
+      setSnackbarSeverity("info");
+      setOpenSnackbar(true);
+      setReloadTable(prevState => !prevState); // Toggle reloadTable state
+    } catch (error) {
+      setShowConfirmationModal(false);
+      setSnackbarMessage("Failed to delete dish");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
   };
 
   const [dishForm, setDishForm] = useState({
@@ -100,19 +135,22 @@ const DishPage = () => {
     englishName: "",
     koreanName: "",
     description: "",
-    allergicWarning: "",
-    price: "",
-    image: "",
-    availableStatus: false,
-    sellingDate: "",
-    dineInCategory: "",
-    deliveryCategory: "",
+    allergy: "",
+    price: null,
+    imageUrl: "",
+    dineInType: "",
+    deliveryType: "",
+    isAvailable: false,
+    sellingDate: null,
+    dineInCategoryId: null,
+    deliveryCategoryId: null,
   });
 
   const handleInputChange = (event) => {
+    const newValue = (event.target.value) ? event.target.value : null;
     setDishForm({
       ...dishForm,
-      [event.target.name]: event.target.value,
+      [event.target.name]: newValue,
     });
   };
 
@@ -133,14 +171,15 @@ const DishPage = () => {
         englishName: dishToEdit.englishName,
         koreanName: dishToEdit.koreanName,
         description: dishToEdit.description,
-        allergicWarning: dishToEdit.allergy,
+        allergy: dishToEdit.allergy,
         price: dishToEdit.price,
-        image: dishToEdit.imageUrl,
-        availableStatus: dishToEdit.isAvailable,
+        imageUrl: dishToEdit.imageUrl,
+        isAvailable: dishToEdit.isAvailable,
         sellingDate: dishToEdit.sellingDate,
-        dineInCategory: dishToEdit.dineInCategory.categoryName,
-        deliveryCategory: dishToEdit.deliveryCategory.categoryName,
+        dineInCategoryId: dishToEdit.dineInCategory ? dishToEdit.dineInCategory.categoryId: null,
+        deliveryCategoryId: dishToEdit.deliveryCategory ? dishToEdit.deliveryCategory.categoryId: null,
       });
+      setOriginalCategoryName(dishToEdit.dishName);
       handleOpen();
       setEditDishId(dishId);
       setShowEditForm(true);
@@ -154,13 +193,15 @@ const DishPage = () => {
       englishName: "",
       koreanName: "",
       description: "",
-      allergicWarning: "",
-      price: "",
-      image: "",
-      availableStatus: false,
-      sellingDate: "",
-      dineInCategory: "",
-      deliveryCategory: "",
+      allergy: "",
+      price: null,
+      imageUrl: "",
+      dineInType: "",
+      deliveryType: "",
+      isAvailable: false,
+      sellingDate: null,
+      dineInCategoryId: null,
+      deliveryCategoryId: null,
     });
   };
 
@@ -181,15 +222,6 @@ const DishPage = () => {
   const validateForm = () => {
     let tempErrors = {};
     tempErrors.dishName = dishForm.dishName ? "" : "This field is required.";
-    tempErrors.shortName = dishForm.shortName ? "" : "This field is required.";
-    tempErrors.englishName = dishForm.englishName ? "" : "This field is required.";
-    tempErrors.koreanName = dishForm.koreanName ? "" : "This field is required.";
-    tempErrors.price = dishForm.price ? "" : "This field is required.";
-    tempErrors.image = dishForm.image ? "" : "This field is required.";
-    tempErrors.description = dishForm.description ? "" : "This field is required.";
-    tempErrors.allergicWarning = dishForm.allergicWarning ? "" : "This field is required.";
-    tempErrors.dineInCategory = dishForm.dineInCategory ? "" : "This field is required.";
-    tempErrors.deliveryCategory = dishForm.deliveryCategory ? "" : "This field is required.";
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
   };
@@ -198,13 +230,38 @@ const DishPage = () => {
     event.preventDefault();
     if (validateForm()) {
       try {
-        await addNewDish(dishForm);
+        const result = await addNewDish(dishForm);
+        if (result.statusCode !== 200) {
+          throw new Error("Failed to add new dish. Please try again.");
+        }
         setSnackbarMessage("Successfully added new dish");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
         handleClose();
+        setReloadTable(prevState => !prevState); // Toggle reloadTable state
       } catch (error) {
         setSnackbarMessage("Failed to add new dish");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
+    }
+  };
+
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      try {
+        const result = await updateDish(editDishId, dishForm);
+        if (result.statusCode !== 200) {
+          throw new Error("Failed to update dish. Please try again.");
+        }
+        setSnackbarMessage("Successfully updated dish");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        handleClose();
+        setReloadTable(prevState => !prevState); // Toggle reloadTable state
+      } catch (error) {
+        setSnackbarMessage("Failed to update dish");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
       }
@@ -224,56 +281,9 @@ const DishPage = () => {
         >
           <Grid item>
             <Box display="flex" gap={2}>
-              <FormControl fullWidth style={{ width: "300px" }}>
-                <InputLabel id="restaurant-label">Restaurant</InputLabel>
-                <Select
-                  labelId="restaurant-label"
-                  value={selectedRestaurant}
-                  onChange={(e) => setSelectedRestaurant(e.target.value)}
-                  input={<OutlinedInput label="Restaurant" />}
-                >
-                  {restaurants.map((restaurant) => (
-                    <MenuItem
-                      key={restaurant.restaurantId}
-                      value={restaurant.restaurantId}
-                    >
-                      {restaurant.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth style={{ width: "300px" }}>
-                <InputLabel id="menu-type-label">Menu Type</InputLabel>
-                <Select
-                  labelId="menu-type-label"
-                  value={menuType}
-                  onChange={(e) => setMenuType(e.target.value)}
-                  input={<OutlinedInput label="Menu Type" />}
-                >
-                  <MenuItem value="1">DineIn</MenuItem>
-                  <MenuItem value="2">Delivery</MenuItem>
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  setSelectedRestaurant("");
-                  setMenuType("");
-                  setDishes([]);
-                  setAreMenuItemsDisplayed(false);
-                }}
-              >
-                Clear Filter
+              <Button variant="contained" color="success" onClick={handleOpenAddNewDishDialog}>
+                Add New Dish
               </Button>
-              <Button variant="contained" color="primary" onClick={handleApply}>
-                Apply
-              </Button>
-              {areMenuItemsDisplayed && (
-                <Button variant="contained" color="success" onClick={handleOpenAddNewDishDialog}>
-                  Add New Dish
-                </Button>
-              )}
 
               <Dialog open={open} onClose={handleClose}>
                 <DialogTitle fontSize={25} fontWeight="bold">
@@ -410,13 +420,13 @@ const DishPage = () => {
                     <Grid item xs={12} sm={8}>
                       <TextField
                         required={true}
-                        name="allergicWarning"
-                        value={dishForm.allergicWarning}
+                        name="allergy"
+                        value={dishForm.allergy}
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter allergic warning"
-                        error={Boolean(errors.allergicWarning)}
-                        helperText={errors.allergicWarning}
+                        error={Boolean(errors.allergy)}
+                        helperText={errors.allergy}
                       />
                     </Grid>
                     <Grid
@@ -450,18 +460,62 @@ const DishPage = () => {
                       display="flex"
                       alignItems="center"
                     >
+                      <Typography variant="h7">DineIn Type</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <TextField
+                        required={true}
+                        name="dineInType"
+                        value={dishForm.dineInType}
+                        onChange={handleInputChange}
+                        fullWidth
+                        placeholder="Enter dineIn type"
+                        error={Boolean(errors.dineInType)}
+                        helperText={errors.dineInType}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={4}
+                      container
+                      display="flex"
+                      alignItems="center"
+                    >
+                      <Typography variant="h7">Delivery Type</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <TextField
+                        required={true}
+                        name="deliveryType"
+                        value={dishForm.deliveryType}
+                        onChange={handleInputChange}
+                        fullWidth
+                        placeholder="Enter delivery type"
+                        error={Boolean(errors.deliveryType)}
+                        helperText={errors.deliveryType}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={4}
+                      container
+                      display="flex"
+                      alignItems="center"
+                    >
                       <Typography variant="h7">Image</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
                       <TextField
                         required={true}
-                        name="image"
-                        value={dishForm.image}
+                        name="imageUrl"
+                        value={dishForm.imageUrl}
                         onChange={handleInputChange}
                         fullWidth
-                        placeholder="Enter image URL"
-                        error={Boolean(errors.image)}
-                        helperText={errors.image}
+                        placeholder="Enter imageUrl URL"
+                        error={Boolean(errors.imageUrl)}
+                        helperText={errors.imageUrl}
                       />
                     </Grid>
                     <Grid
@@ -478,9 +532,9 @@ const DishPage = () => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={dishForm.availableStatus}
+                            checked={dishForm.isAvailable}
                             onChange={handleCheckboxChange}
-                            name="availableStatus"
+                            name="isAvailable"
                           />
                         }
                         label=""
@@ -524,7 +578,7 @@ const DishPage = () => {
                       <Typography variant="h7">DineIn Category</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      <TextField
+                      {/* <TextField
                         required={true}
                         name="dineInCategory"
                         value={dishForm.dineInCategory}
@@ -533,7 +587,25 @@ const DishPage = () => {
                         placeholder="Enter DineIn Category"
                         error={Boolean(errors.dineInCategory)}
                         helperText={errors.dineInCategory}
-                      />
+                      /> */}
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel id="dineInCategoryLabel">DineInCategory</InputLabel>
+                        <Select
+                          labelId="dineInCategoryLabel"
+                          id="dineInCategory"
+                          value={dishForm.dineInCategoryId || ''}
+                          onChange={handleInputChange}
+                          label="DineIn Category"
+                          name="dineInCategoryId"
+                        >
+                          <MenuItem value="">None</MenuItem>
+                          {dineInCategories.map(category => (
+                            <MenuItem key={category.categoryId} value={category.categoryId}>
+                              {category.categoryName}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid
                       item
@@ -546,7 +618,7 @@ const DishPage = () => {
                       <Typography variant="h7">Delivery Category</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      <TextField
+                      {/* <TextField
                         required={true}
                         name="deliveryCategory"
                         value={dishForm.deliveryCategory}
@@ -555,7 +627,25 @@ const DishPage = () => {
                         placeholder="Enter Delivery Category"
                         error={Boolean(errors.deliveryCategory)}
                         helperText={errors.deliveryCategory}
-                      />
+                      /> */}
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel id="deliveryCategoryLabel">DeliveryCategory</InputLabel>
+                        <Select
+                          labelId="deliveryCategoryLabel"
+                          id="deliveryCategory"
+                          value={dishForm.deliveryCategoryId || ''}
+                          onChange={handleInputChange}
+                          label="Delivery Category"
+                          name="deliveryCategoryId"
+                        >
+                          <MenuItem value="">None</MenuItem>
+                          {deliveryCategories.map(category => (
+                            <MenuItem key={category.categoryId} value={category.categoryId}>
+                              {category.categoryName}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                   </Grid>
                 </DialogContent>
@@ -585,7 +675,7 @@ const DishPage = () => {
       {showEditForm && (
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle fontSize={25} fontWeight="bold">
-            Edit {dishForm.dishName}
+            Edit {originalCategoryName}
             <IconButton
               style={{ position: "absolute", right: "8px", top: "8px" }}
               onClick={handleClose}
@@ -718,13 +808,13 @@ const DishPage = () => {
               <Grid item xs={12} sm={8}>
                 <TextField
                   required={true}
-                  name="allergicWarning"
-                  value={dishForm.allergicWarning}
+                  name="allergy"
+                  value={dishForm.allergy}
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter allergic warning"
-                  error={Boolean(errors.allergicWarning)}
-                  helperText={errors.allergicWarning}
+                  error={Boolean(errors.allergy)}
+                  helperText={errors.allergy}
                 />
               </Grid>
               <Grid
@@ -758,18 +848,62 @@ const DishPage = () => {
                 display="flex"
                 alignItems="center"
               >
+                <Typography variant="h7">DineIn Type</Typography>
+              </Grid>
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  required={true}
+                  name="dineInType"
+                  value={dishForm.dineInType}
+                  onChange={handleInputChange}
+                  fullWidth
+                  placeholder="Enter dineIn type"
+                  error={Boolean(errors.dineInType)}
+                  helperText={errors.dineInType}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={4}
+                container
+                display="flex"
+                alignItems="center"
+              >
+                <Typography variant="h7">Delivery Type</Typography>
+              </Grid>
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  required={true}
+                  name="deliveryType"
+                  value={dishForm.deliveryType}
+                  onChange={handleInputChange}
+                  fullWidth
+                  placeholder="Enter delivery type"
+                  error={Boolean(errors.deliveryType)}
+                  helperText={errors.deliveryType}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={4}
+                container
+                display="flex"
+                alignItems="center"
+              >
                 <Typography variant="h7">Image</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
                 <TextField
                   required={true}
-                  name="image"
-                  value={dishForm.image}
+                  name="imageUrl"
+                  value={dishForm.imageUrl}
                   onChange={handleInputChange}
                   fullWidth
-                  placeholder="Enter image URL"
-                  error={Boolean(errors.image)}
-                  helperText={errors.image}
+                  placeholder="Enter imageUrl URL"
+                  error={Boolean(errors.imageUrl)}
+                  helperText={errors.imageUrl}
                 />
               </Grid>
               <Grid
@@ -786,9 +920,9 @@ const DishPage = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={dishForm.availableStatus}
+                      checked={dishForm.isAvailable}
                       onChange={handleCheckboxChange}
-                      name="availableStatus"
+                      name="isAvailable"
                     />
                   }
                   label=""
@@ -832,7 +966,7 @@ const DishPage = () => {
                 <Typography variant="h7">DineIn Category</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <TextField
+                {/* <TextField
                   required={true}
                   name="dineInCategory"
                   value={dishForm.dineInCategory}
@@ -841,7 +975,25 @@ const DishPage = () => {
                   placeholder="Enter DineIn Category"
                   error={Boolean(errors.dineInCategory)}
                   helperText={errors.dineInCategory}
-                />
+                /> */}
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="dineInCategoryLabel">DineInCategory</InputLabel>
+                  <Select
+                    labelId="dineInCategoryLabel"
+                    id="dineInCategory"
+                    value={dishForm.dineInCategoryId || ''}
+                    onChange={handleInputChange}
+                    label="DineIn Category"
+                    name="dineInCategoryId"
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    {dineInCategories.map(category => (
+                      <MenuItem key={category.categoryId} value={category.categoryId}>
+                        {category.categoryName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid
                 item
@@ -854,7 +1006,7 @@ const DishPage = () => {
                 <Typography variant="h7">Delivery Category</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <TextField
+                {/* <TextField
                   required={true}
                   name="deliveryCategory"
                   value={dishForm.deliveryCategory}
@@ -863,7 +1015,25 @@ const DishPage = () => {
                   placeholder="Enter Delivery Category"
                   error={Boolean(errors.deliveryCategory)}
                   helperText={errors.deliveryCategory}
-                />
+                /> */}
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="deliveryCategoryLabel">DeliveryCategory</InputLabel>
+                  <Select
+                    labelId="deliveryCategoryLabel"
+                    id="deliveryCategory"
+                    value={dishForm.deliveryCategoryId || ''}
+                    onChange={handleInputChange}
+                    label="Delivery Category"
+                    name="deliveryCategoryId"
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    {deliveryCategories.map(category => (
+                      <MenuItem key={category.categoryId} value={category.categoryId}>
+                        {category.categoryName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
@@ -878,7 +1048,7 @@ const DishPage = () => {
             <Button
               type="submit"
               color="primary"
-              onClick={handleSubmit}
+              onClick={handleEditSubmit}
               variant="contained"
             >
               Submit

@@ -123,7 +123,6 @@ const DropdownPage = () => {
 
     const handleEdit = (dropdownId) => {
         const dropdownToEdit = dropdowns.find(dropdown => dropdown.dropdownId === dropdownId);
-        console.log(dropdownToEdit);
         if (dropdownToEdit) {
             setDropdownForm({
                 name: dropdownToEdit.name,
@@ -182,7 +181,6 @@ const DropdownPage = () => {
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to add new dropdown");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
@@ -204,7 +202,6 @@ const DropdownPage = () => {
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to update dropdown");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);

@@ -115,7 +115,6 @@ const DineInCategoryPage = () => {
 
     const handleEdit = (categoryId) => {
         const dineInCategoryToEdit = dineInCategories.find(dineInCategory => dineInCategory.categoryId === categoryId);
-        console.log(dineInCategoryToEdit);
         if (dineInCategoryToEdit) {
             setDineInCategoryForm({
                 categoryName: dineInCategoryToEdit.categoryName,
@@ -152,7 +151,6 @@ const DineInCategoryPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hihihi:--------", dineInCategoryForm);
                 const result = await addNewDineInCategory(dineInCategoryForm);
                 if(result.statusCode !== 200) {
                     throw new Error("Failed to add new dineInCategory");
@@ -164,7 +162,6 @@ const DineInCategoryPage = () => {
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
 
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to add new dineInCategory");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
@@ -176,7 +173,6 @@ const DineInCategoryPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hahahha:--------", dineInCategoryForm);
                 const result = await updateDineInCategory(editDineInCategoryId, dineInCategoryForm);
                 if(result.statusCode !== 200) {
                     throw new Error("Failed to update dineInCategory");
@@ -187,7 +183,6 @@ const DineInCategoryPage = () => {
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
-                handleClose();
                 setSnackbarMessage("Failed to update dineInCategory");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
