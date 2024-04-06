@@ -48,12 +48,12 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                                 <TableCell>
                                     <Box display="flex">
                                         <Tooltip title="Edit">
-                                            <IconButton color="primary" onClick={() => onEdit(dish.dishId)}>
+                                            <IconButton color="info" onClick={() => onEdit(dish.dishId)}>
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Delete">
-                                            <IconButton color="secondary" onClick={() => onDelete(dish.dishId)}>
+                                            <IconButton color="error" onClick={() => onDelete(dish.dishId)}>
                                                 <Delete />
                                             </IconButton>
                                         </Tooltip>

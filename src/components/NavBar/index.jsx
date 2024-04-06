@@ -7,7 +7,8 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <NavLink
-          to="/admin"
+          to="/userpage"
+          end = {true}
           style={{ textDecoration: "none", color: "white"}}
         >
           {({ isActive }) => (
@@ -17,13 +18,32 @@ const Navbar = () => {
           )}
         </NavLink>
         <NavLink
-          to="/restaurant"
-          end = {true}
+          to="/restaurantpage"
           style={{ textDecoration: "none", color: "white"}}
         >
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
               Restaurant Page
+            </Button>
+          )}
+        </NavLink>
+        <NavLink
+          to="/dropdownpage"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          {({ isActive }) => (
+            <Button color="inherit" className={isActive ? "active-tab" : ""}>
+              Dropdown Page
+            </Button>
+          )}
+        </NavLink>
+        <NavLink
+          to="/dishpage"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          {({ isActive }) => (
+            <Button color="inherit" className={isActive ? "active-tab" : ""}>
+              Dish Page
             </Button>
           )}
         </NavLink>

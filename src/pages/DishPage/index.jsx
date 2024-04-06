@@ -21,27 +21,23 @@ import {
   Alert
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import DishForm from "../../components/DishForm";
 import DishTable from "../../components/DishTable";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import UpdateMenuModal from "../../components/UpdateMenuModal";
 import {
   getAllRestaurants,
   getCurrentMenu,
   addNewDish,
   deleteDish,
-  updateDish,
-  updateMenu,
+  updateDish
 } from "../../api";
 
-const AdminPage = () => {
+const DishPage = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [menuType, setMenuType] = useState("");
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [dishes, setDishes] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showUpdateMenuModal, setShowUpdateMenuModal] = useState(false);
   const [editDishId, setEditDishId] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -49,7 +45,6 @@ const AdminPage = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [errors, setErrors] = useState({});
   const [areMenuItemsDisplayed, setAreMenuItemsDisplayed] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -89,53 +84,6 @@ const AdminPage = () => {
     setShowConfirmationModal(true);
   };
 
-  const handleEdit = (dishId) => {
-    const dishToEdit = dishes.find(dish => dish.dishId === dishId);
-    console.log(dishToEdit);
-    if (dishToEdit) {
-      setDishForm({
-        dishName: dishToEdit.dishName,
-        shortName: dishToEdit.shortName,
-        englishName: dishToEdit.englishName,
-        koreanName: dishToEdit.koreanName,
-        description: dishToEdit.description,
-        allergicWarning: dishToEdit.allergy,
-        price: dishToEdit.price,
-        image: dishToEdit.imageUrl,
-        availableStatus: dishToEdit.isAvailable,
-        sellingDate: dishToEdit.sellingDate,
-        dineInCategory: dishToEdit.dineInCategory.categoryName, 
-        deliveryCategory: dishToEdit.deliveryCategory.categoryName,
-      });
-      handleOpen();
-      setEditDishId(dishId);
-      setShowEditForm(true);
-    }
-  };
-
-  const resetDishForm = () => {
-    setDishForm({
-      dishName: "",
-      shortName: "",
-      englishName: "",
-      koreanName: "",
-      description: "",
-      allergicWarning: "",
-      price: "",
-      image: "",
-      availableStatus: false,
-      sellingDate: "",
-      dineInCategory: "",
-      deliveryCategory: "",
-    });
-  };
-
-  const handleOpenAddNewDishDialog = () => {
-    resetDishForm(); // Reset dishForm state to initial empty values
-    handleOpen(); // Open the dialog
-    setShowEditForm(false); // Ensure edit form is not shown
-  };
-
   const handleConfirmationModalClose = () => {
     setShowConfirmationModal(false);
   };
@@ -144,20 +92,6 @@ const AdminPage = () => {
     await deleteDish(selectedDish);
     handleApply(); // Refresh the dishes
     setShowConfirmationModal(false);
-  };
-
-  const handleUpdateMenu = () => {
-    setShowUpdateMenuModal(true);
-  };
-
-  const handleUpdateMenuModalClose = () => {
-    setShowUpdateMenuModal(false);
-  };
-
-  const handleUpdateMenuModalConfirm = async () => {
-    await updateMenu(selectedRestaurant, menuType);
-    handleApply(); // Refresh the dishes
-    setShowUpdateMenuModal(false);
   };
 
   const [dishForm, setDishForm] = useState({
@@ -187,6 +121,53 @@ const AdminPage = () => {
       ...dishForm,
       [event.target.name]: event.target.checked,
     });
+  };
+
+  const handleEdit = (dishId) => {
+    const dishToEdit = dishes.find(dish => dish.dishId === dishId);
+    console.log(dishToEdit);
+    if (dishToEdit) {
+      setDishForm({
+        dishName: dishToEdit.dishName,
+        shortName: dishToEdit.shortName,
+        englishName: dishToEdit.englishName,
+        koreanName: dishToEdit.koreanName,
+        description: dishToEdit.description,
+        allergicWarning: dishToEdit.allergy,
+        price: dishToEdit.price,
+        image: dishToEdit.imageUrl,
+        availableStatus: dishToEdit.isAvailable,
+        sellingDate: dishToEdit.sellingDate,
+        dineInCategory: dishToEdit.dineInCategory.categoryName,
+        deliveryCategory: dishToEdit.deliveryCategory.categoryName,
+      });
+      handleOpen();
+      setEditDishId(dishId);
+      setShowEditForm(true);
+    }
+  };
+
+  const resetDishForm = () => {
+    setDishForm({
+      dishName: "",
+      shortName: "",
+      englishName: "",
+      koreanName: "",
+      description: "",
+      allergicWarning: "",
+      price: "",
+      image: "",
+      availableStatus: false,
+      sellingDate: "",
+      dineInCategory: "",
+      deliveryCategory: "",
+    });
+  };
+
+  const handleOpenAddNewDishDialog = () => {
+    resetDishForm(); // Reset dishForm state to initial empty values
+    handleOpen(); // Open the dialog
+    setShowEditForm(false); // Ensure edit form is not shown
   };
 
   const handleCloseSnackbar = (reason) => {
@@ -600,7 +581,6 @@ const AdminPage = () => {
           </Grid>
         </Grid>
       </Box>
-      {/* <DishForm onSubmit={handleApply} /> */}
       <DishTable dishes={dishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} />
       {showEditForm && (
         <Dialog open={open} onClose={handleClose}>
@@ -906,31 +886,11 @@ const AdminPage = () => {
           </DialogActions>
         </Dialog>
       )}
-      {/* <Box mt={4}>
-        <Grid
-          container
-          spacing={1}
-          alignItems={"center"}
-          justifyContent={"flex-end"}
-        >
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={handleUpdateMenu}>
-              Update Menu
-            </Button>
-          </Grid>
-        </Grid>
-      </Box> */}
       <ConfirmationModal
         open={showConfirmationModal}
         message={"Are you sure you want to delete this dish?"}
         onCancel={handleConfirmationModalClose}
         onConfirm={handleConfirmationModalConfirm}
-      />
-      <UpdateMenuModal
-        open={showUpdateMenuModal}
-        message={"Are you sure you want to update the menu?"}
-        onCancel={handleUpdateMenuModalClose}
-        onConfirm={handleUpdateMenuModalConfirm}
       />
       <Snackbar
         open={openSnackbar}
@@ -949,4 +909,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default DishPage;

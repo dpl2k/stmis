@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import AdminPage from './pages/AdminPage';
 import RestaurantPage from './pages/RestaurantPage';
+import DropdownPage from './pages/DropdownPage';
+import DishPage from './pages/DishPage';
+import UserPage from './pages/UserPage';
 import Navbar from './components/NavBar';
 
 const Redirector = () => {
@@ -10,7 +12,7 @@ const Redirector = () => {
 
   useEffect(() => {
     if (location.pathname === "/") {
-      navigate("/restaurant");
+      navigate("/restaurantpage");
     }
   }, [location, navigate]);
 
@@ -23,9 +25,11 @@ const App = () => {
       <Navbar />
       <Redirector />
       <Routes>
-        <Route path="/" element={<RestaurantPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/restaurant" element={<RestaurantPage />} />
+        <Route path="/" element={<UserPage />} />
+        <Route path="/dishpage" element={<DishPage />} />
+        <Route path="/restaurantpage" element={<RestaurantPage />} />
+        <Route path="/dropdownpage" element={<DropdownPage />} />
+        <Route path="/userpage" element={<UserPage />} />
       </Routes>
     </Router>
   );
