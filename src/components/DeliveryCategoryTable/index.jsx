@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Box } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
-const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
+const DeliveryCategoryTable = ({ deliveryCategories, onDelete, onEdit }) => {
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -15,20 +15,20 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {dineInCategories.map((dineInCategory, index) => (
+                    {deliveryCategories.map((deliveryCategory, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
-                            {/* <TableCell>{dineInCategory.categoryId}</TableCell> */}
-                            <TableCell>{dineInCategory.categoryName}</TableCell>
-                            <TableCell>{dineInCategory.parentCategory ? dineInCategory.parentCategory.categoryName : "N/A"}</TableCell>
+                            {/* <TableCell>{deliveryCategory.categoryId}</TableCell> */}
+                            <TableCell>{deliveryCategory.categoryName}</TableCell>
+                            <TableCell>{deliveryCategory.parentCategory ? deliveryCategory.parentCategory.categoryName : "N/A"}</TableCell>
                             <TableCell>
                                 <Box display="flex">
                                     <Tooltip title="Edit">
-                                        <IconButton color="info" onClick={() => onEdit(dineInCategory.categoryId)}>
+                                        <IconButton color="info" onClick={() => onEdit(deliveryCategory.categoryId)}>
                                             <Edit />
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Delete">
-                                        <IconButton color="error" onClick={() => onDelete(dineInCategory.categoryId)}>
+                                        <IconButton color="error" onClick={() => onDelete(deliveryCategory.categoryId)}>
                                             <Delete />
                                         </IconButton>
                                     </Tooltip>
@@ -42,4 +42,4 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
     );
 };
 
-export default DineInCategoryTable;
+export default DeliveryCategoryTable;

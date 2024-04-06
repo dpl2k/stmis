@@ -8,7 +8,7 @@ const RestaurantTable = ({ restaurants, onDelete, onEdit }) => {
             <Table>
                 <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
-                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Restaurant ID</TableCell>
+                        {/* <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Restaurant ID</TableCell> */}
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Restaurant Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
                     </TableRow>
@@ -16,7 +16,7 @@ const RestaurantTable = ({ restaurants, onDelete, onEdit }) => {
                 <TableBody>
                     {restaurants.map((restaurant, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
-                            <TableCell>{restaurant.restaurantId}</TableCell>
+                            {/* <TableCell>{restaurant.restaurantId}</TableCell> */}
                             <TableCell>{restaurant.name}</TableCell>
                             <TableCell>
                                 <Box display="flex">

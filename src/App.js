@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from
 import RestaurantPage from './pages/RestaurantPage';
 import DropdownPage from './pages/DropdownPage';
 import DishPage from './pages/DishPage';
+import DineInCategoryPage from './pages/DineInCategoryPage';
+import DeliveryCategoryPage from './pages/DeliveryCategoryPage';
 import UserPage from './pages/UserPage';
 import Navbar from './components/NavBar';
 
@@ -29,6 +31,8 @@ const App = () => {
         <Route path="/dishpage" element={<DishPage />} />
         <Route path="/restaurantpage" element={<RestaurantPage />} />
         <Route path="/dropdownpage" element={<DropdownPage />} />
+        <Route path="/dineincategorypage" element={<DineInCategoryPage />} />
+        <Route path="/deliverycategorypage" element={<DeliveryCategoryPage />} />
         <Route path="/userpage" element={<UserPage />} />
       </Routes>
     </Router>

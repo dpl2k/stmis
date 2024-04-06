@@ -37,6 +37,7 @@ const DropdownPage = () => {
     const [reloadTable, setReloadTable] = useState(false); // State variable to trigger table reload
     const [errors, setErrors] = useState({});
     const [open, setOpen] = useState(false);
+    const [originalCategoryName, setOriginalCategoryName] = useState("");
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setErrors({}); // Clear the errors
@@ -47,6 +48,9 @@ const DropdownPage = () => {
         const fetchDropdowns = async () => {
             try {
                 const data = await getAllDropdowns();
+                if(data.statusCode !== 200) {
+                    throw new Error("Failed to get dropdowns. Please wait and try again.");
+                }
                 setDropdowns(data.result);
             } catch (error) {
                 setSnackbarMessage("Failed to get dropdowns. Please wait and try again.");
@@ -77,7 +81,10 @@ const DropdownPage = () => {
 
     const handleConfirmationModalConfirm = async () => {
         try {
-            await deleteDropdown(selectedDropdown);
+            const result = await deleteDropdown(selectedDropdown);
+            if (result.statusCode !== 200) {
+                throw new Error("Failed to delete dropdown. Please try again.");
+            }
             setShowConfirmationModal(false);
             setSnackbarMessage("Successfully delete restaurant");
             setSnackbarSeverity("info");
@@ -126,6 +133,7 @@ const DropdownPage = () => {
                 description: dropdownToEdit.description,
                 isActive: dropdownToEdit.isActive,
             });
+            setOriginalCategoryName(dropdownToEdit.name);
             handleOpen();
             setEditDropdownId(dropdownId);
             setShowEditForm(true);
@@ -164,14 +172,17 @@ const DropdownPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hihihi:--------", dropdownForm);
-                await addNewDropdown(dropdownForm);
+                const result = await addNewDropdown(dropdownForm);
+                if (result.statusCode !== 200) {
+                    throw new Error("Failed to add new dropdown. Please try again.");
+                }
                 handleClose();
                 setSnackbarMessage("Successfully added new dropdown");
                 setSnackbarSeverity("info");
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
+                handleClose();
                 setSnackbarMessage("Failed to add new dropdown");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
@@ -183,14 +194,17 @@ const DropdownPage = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                console.log("hahahha:--------", dropdownForm);
-                await updateDropdown(editDropdownId, dropdownForm);
+                const result = await updateDropdown(editDropdownId, dropdownForm);
+                if (result.statusCode !== 200) {
+                    throw new Error("Failed to update dropdown. Please try again.");
+                }
                 handleClose();
                 setSnackbarMessage("Successfully update dropdown");
                 setSnackbarSeverity("info");
                 setOpenSnackbar(true);
                 setReloadTable(prevState => !prevState); // Toggle reloadTable state
             } catch (error) {
+                handleClose();
                 setSnackbarMessage("Failed to update dropdown");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
@@ -385,7 +399,7 @@ const DropdownPage = () => {
             {showEditForm && (
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle fontSize={25} fontWeight="bold">
-                        Edit {dropdownForm.name}
+                        Edit {originalCategoryName}
                         <IconButton
                             style={{ position: "absolute", right: "8px", top: "8px" }}
                             onClick={handleClose}

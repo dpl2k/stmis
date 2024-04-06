@@ -13,7 +13,7 @@ const Navbar = () => {
         >
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
-              Admin Page
+              User Page
             </Button>
           )}
         </NavLink>
@@ -34,6 +34,26 @@ const Navbar = () => {
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
               Dropdown Page
+            </Button>
+          )}
+        </NavLink>
+        <NavLink
+          to="/dineincategorypage"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          {({ isActive }) => (
+            <Button color="inherit" className={isActive ? "active-tab" : ""}>
+              DineIn Category Page
+            </Button>
+          )}
+        </NavLink>
+        <NavLink
+          to="/deliverycategorypage"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          {({ isActive }) => (
+            <Button color="inherit" className={isActive ? "active-tab" : ""}>
+              Delivery Category Page
             </Button>
           )}
         </NavLink>

@@ -34,6 +34,7 @@ const RestaurantPage = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [reloadTable, setReloadTable] = useState(false); // State variable to trigger table reload
   const [errors, setErrors] = useState({});
+  const [originalCategoryName, setOriginalCategoryName] = useState("");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -45,6 +46,9 @@ const RestaurantPage = () => {
     const fetchRestaurants = async () => {
       try {
         const data = await getAllRestaurants();
+        if(data.statusCode !== 200) {
+          throw new Error("Failed to get restaurants. Please wait and try again.");
+        }
         setRestaurants(data.result);
       } catch (error) {
         setSnackbarMessage("Failed to get restaurants. Please wait and try again.");
@@ -63,31 +67,6 @@ const RestaurantPage = () => {
     setOpenSnackbar(false);
   };
 
-  const handleEdit = (restaurantId) => {
-    const restaurantToEdit = restaurants.find(restaurant => restaurant.restaurantId === restaurantId);
-    console.log(restaurantToEdit);
-    if (restaurantToEdit) {
-      setRestaurantForm({
-        name: restaurantToEdit.name,
-      });
-      handleOpen();
-      setEditRestaurantId(restaurantId);
-      setShowEditForm(true);
-    }
-  };
-
-  const resetRestaurantForm = () => {
-    setRestaurantForm({
-      name: ""
-    });
-  };
-
-  const handleOpenAddNewRestaurantDialog = () => {
-    resetRestaurantForm(); // Reset restaurantForm state to initial empty values
-    handleOpen(); // Open the dialog
-    setShowEditForm(false); // Ensure edit form is not shown
-  };
-
   // delete
   const handleDelete = (restaurantId) => {
     setSelectedRestaurant(restaurantId);
@@ -100,10 +79,13 @@ const RestaurantPage = () => {
 
   const handleConfirmationModalConfirm = async () => {
     try {
-      await deleteRestaurant(selectedRestaurant);
+      const result = await deleteRestaurant(selectedRestaurant);
+      if(result.statusCode !== 200) {
+        throw new Error("Failed to delete restaurant. Please try again.");
+      }
       setShowConfirmationModal(false);
       setSnackbarMessage("Successfully delete restaurant");
-      setSnackbarSeverity("success");
+      setSnackbarSeverity("info");
       setOpenSnackbar(true);
       setReloadTable(prevState => !prevState); // Toggle reloadTable state
     } catch (error) {
@@ -125,6 +107,32 @@ const RestaurantPage = () => {
     });
   };
 
+  const handleEdit = (restaurantId) => {
+    const restaurantToEdit = restaurants.find(restaurant => restaurant.restaurantId === restaurantId);
+    console.log(restaurantToEdit);
+    if (restaurantToEdit) {
+      setRestaurantForm({
+        name: restaurantToEdit.name,
+      });
+      setOriginalCategoryName(restaurantToEdit.name);
+      handleOpen();
+      setEditRestaurantId(restaurantId);
+      setShowEditForm(true);
+    }
+  };
+
+  const resetRestaurantForm = () => {
+    setRestaurantForm({
+      name: ""
+    });
+  };
+
+  const handleOpenAddNewRestaurantDialog = () => {
+    resetRestaurantForm(); // Reset restaurantForm state to initial empty values
+    handleOpen(); // Open the dialog
+    setShowEditForm(false); // Ensure edit form is not shown
+  };
+
   const validateForm = () => {
     let tempErrors = {};
     tempErrors.name = restaurantForm.name ? "" : "This field is required.";
@@ -136,13 +144,17 @@ const RestaurantPage = () => {
     event.preventDefault();
     if (validateForm()) {
       try {
-        await addNewRestaurant(restaurantForm);
+        const result = await addNewRestaurant(restaurantForm);
+        if(result.statusCode !== 200) {
+          throw new Error("Failed to add new restaurant");
+        }
         handleClose();
         setSnackbarMessage("Successfully added new restaurant");
-        setSnackbarSeverity("success");
+        setSnackbarSeverity("info");
         setOpenSnackbar(true);
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
       } catch (error) {
+        handleClose();
         setSnackbarMessage("Failed to add new restaurant");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
@@ -154,13 +166,17 @@ const RestaurantPage = () => {
     event.preventDefault();
     if (validateForm()) {
       try {
-        await updateRestaurant(editRestaurantId, restaurantForm);
+        const result = await updateRestaurant(editRestaurantId, restaurantForm);
+        if(result.statusCode !== 200) {
+          throw new Error("Failed to update restaurant");
+        }
         handleClose();
         setSnackbarMessage("Successfully update restaurant");
-        setSnackbarSeverity("success");
+        setSnackbarSeverity("info");
         setOpenSnackbar(true);
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
       } catch (error) {
+        handleClose();
         setSnackbarMessage("Failed to update restaurant");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
@@ -245,7 +261,7 @@ const RestaurantPage = () => {
       {showEditForm && (
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle fontSize={25} fontWeight="bold">
-            Edit {restaurantForm.name}
+            Edit {originalCategoryName}
             <IconButton
               style={{ position: "absolute", right: "8px", top: "8px" }}
               onClick={handleClose}
