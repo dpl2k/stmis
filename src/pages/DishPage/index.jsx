@@ -271,7 +271,7 @@ const DishPage = () => {
 
   return (
     <Box p={3} pt={1}>
-      <h1>Admin Page</h1>
+      <h1>Dish Page</h1>
       <Box mb={4}>
         <Grid
           container
@@ -337,8 +337,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter short name"
-                        error={Boolean(errors.shortName)}
-                        helperText={errors.shortName}
                       />
                     </Grid>
                     <Grid
@@ -359,8 +357,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter English name"
-                        error={Boolean(errors.englishName)}
-                        helperText={errors.englishName}
                       />
                     </Grid>
                     <Grid
@@ -381,8 +377,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter Korean name"
-                        error={Boolean(errors.koreanName)}
-                        helperText={errors.koreanName}
                       />
                     </Grid>
                     <Grid
@@ -403,8 +397,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter description"
-                        error={Boolean(errors.description)}
-                        helperText={errors.description}
                       />
                     </Grid>
                     <Grid
@@ -425,8 +417,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter allergic warning"
-                        error={Boolean(errors.allergy)}
-                        helperText={errors.allergy}
                       />
                     </Grid>
                     <Grid
@@ -448,8 +438,6 @@ const DishPage = () => {
                         fullWidth
                         placeholder="Enter price"
                         type="number"
-                        error={Boolean(errors.price)}
-                        helperText={errors.price}
                       />
                     </Grid>
                     <Grid
@@ -470,8 +458,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter dineIn type"
-                        error={Boolean(errors.dineInType)}
-                        helperText={errors.dineInType}
                       />
                     </Grid>
                     <Grid
@@ -492,8 +478,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter delivery type"
-                        error={Boolean(errors.deliveryType)}
-                        helperText={errors.deliveryType}
                       />
                     </Grid>
                     <Grid
@@ -514,8 +498,6 @@ const DishPage = () => {
                         onChange={handleInputChange}
                         fullWidth
                         placeholder="Enter imageUrl URL"
-                        error={Boolean(errors.imageUrl)}
-                        helperText={errors.imageUrl}
                       />
                     </Grid>
                     <Grid
@@ -563,8 +545,6 @@ const DishPage = () => {
                           shrink: true,
                         }}
                         onKeyDown={(e) => e.preventDefault()}
-                        error={Boolean(errors.sellingDate)}
-                        helperText={errors.sellingDate}
                       />
                     </Grid>
                     <Grid
@@ -705,8 +685,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter short name"
-                  error={Boolean(errors.shortName)}
-                  helperText={errors.shortName}
                 />
               </Grid>
               <Grid
@@ -727,8 +705,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter English name"
-                  error={Boolean(errors.englishName)}
-                  helperText={errors.englishName}
                 />
               </Grid>
               <Grid
@@ -749,8 +725,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter Korean name"
-                  error={Boolean(errors.koreanName)}
-                  helperText={errors.koreanName}
                 />
               </Grid>
               <Grid
@@ -771,8 +745,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter description"
-                  error={Boolean(errors.description)}
-                  helperText={errors.description}
                 />
               </Grid>
               <Grid
@@ -793,8 +765,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter allergic warning"
-                  error={Boolean(errors.allergy)}
-                  helperText={errors.allergy}
                 />
               </Grid>
               <Grid
@@ -816,8 +786,6 @@ const DishPage = () => {
                   fullWidth
                   placeholder="Enter price"
                   type="number"
-                  error={Boolean(errors.price)}
-                  helperText={errors.price}
                 />
               </Grid>
               <Grid
@@ -838,8 +806,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter dineIn type"
-                  error={Boolean(errors.dineInType)}
-                  helperText={errors.dineInType}
                 />
               </Grid>
               <Grid
@@ -860,8 +826,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter delivery type"
-                  error={Boolean(errors.deliveryType)}
-                  helperText={errors.deliveryType}
                 />
               </Grid>
               <Grid
@@ -882,8 +846,6 @@ const DishPage = () => {
                   onChange={handleInputChange}
                   fullWidth
                   placeholder="Enter imageUrl URL"
-                  error={Boolean(errors.imageUrl)}
-                  helperText={errors.imageUrl}
                 />
               </Grid>
               <Grid
@@ -931,8 +893,6 @@ const DishPage = () => {
                     shrink: true,
                   }}
                   onKeyDown={(e) => e.preventDefault()}
-                  error={Boolean(errors.sellingDate)}
-                  helperText={errors.sellingDate}
                 />
               </Grid>
               <Grid
