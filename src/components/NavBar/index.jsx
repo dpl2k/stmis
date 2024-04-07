@@ -80,7 +80,7 @@ const Navbar = () => {
               to="/dishpage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              Dish Page
+              Dishes Page
             </NavLink>
           </MenuItem>
         </Menu>
