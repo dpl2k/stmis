@@ -196,7 +196,13 @@ const RestaurantPage = () => {
               <Button variant="contained" color="success" onClick={handleOpenAddNewRestaurantDialog}>
                 Add New Restaurant
               </Button>
-              <Dialog open={open} onClose={handleClose}>
+              <Dialog open={open} 
+                onClose={(event, reason) => {
+                  if (reason !== 'backdropClick') {
+                    handleClose();
+                  }
+                }}
+              >
                 <DialogTitle fontSize={25} fontWeight="bold">
                   Add New Restaurant
                   <IconButton
@@ -256,7 +262,13 @@ const RestaurantPage = () => {
       </Box>
       <RestaurantTable restaurants={restaurants} onDelete={handleDelete} onEdit={handleEdit} />
       {showEditForm && (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} 
+          onClose={(event, reason) => {
+            if (reason !== 'backdropClick') {
+              handleClose();
+            }
+          }}
+        >
           <DialogTitle fontSize={25} fontWeight="bold">
             Edit {originalCategoryName}
             <IconButton

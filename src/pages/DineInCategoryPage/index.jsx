@@ -142,7 +142,7 @@ const DineInCategoryPage = () => {
 
     const validateForm = () => {
         let tempErrors = {};
-        tempErrors.name = dineInCategoryForm.categoryName ? "" : "This field is required.";
+        tempErrors.categoryName = dineInCategoryForm.categoryName ? "" : "This field is required.";
         setErrors(tempErrors);
         return Object.values(tempErrors).every((x) => x === "");
     };
@@ -205,7 +205,13 @@ const DineInCategoryPage = () => {
                             <Button variant="contained" color="success" onClick={handleOpenAddNewDineInCategoryForm}>
                                 Add New DineInCategory
                             </Button>
-                            <Dialog open={open} onClose={handleClose}>
+                            <Dialog open={open} 
+                                onClose={(event, reason) => {
+                                    if (reason !== 'backdropClick') {
+                                        handleClose();
+                                    }
+                                }}
+                            >
                                 <DialogTitle fontSize={25} fontWeight="bold">
                                     Add New DineInCategory
                                     <IconButton
@@ -297,7 +303,13 @@ const DineInCategoryPage = () => {
             </Box>
             <DineInCategoryTable dineInCategories={dineInCategories} onDelete={handleDelete} onEdit={handleEdit} />
             {showEditForm && (
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} 
+                    onClose={(event, reason) => {
+                        if (reason !== 'backdropClick') {
+                            handleClose();
+                        }
+                    }}
+                >
                     <DialogTitle fontSize={25} fontWeight="bold">
                         Edit {originalCategoryName}
                         <IconButton

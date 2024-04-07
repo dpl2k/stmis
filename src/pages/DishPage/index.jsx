@@ -285,7 +285,13 @@ const DishPage = () => {
                 Add New Dish
               </Button>
 
-              <Dialog open={open} onClose={handleClose}>
+              <Dialog open={open} 
+                onClose={(event, reason) => {
+                  if (reason !== 'backdropClick') {
+                    handleClose();
+                  }
+                }}
+              >
                 <DialogTitle fontSize={25} fontWeight="bold">
                   Add New Dish
                   <IconButton
@@ -633,7 +639,13 @@ const DishPage = () => {
       </Box>
       <DishTable dishes={dishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} />
       {showEditForm && (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} 
+          onClose={(event, reason) => {
+            if (reason !== 'backdropClick') {
+              handleClose();
+            }
+          }}
+        >
           <DialogTitle fontSize={25} fontWeight="bold">
             Edit {originalCategoryName}
             <IconButton

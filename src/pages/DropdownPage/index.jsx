@@ -224,7 +224,13 @@ const DropdownPage = () => {
                             <Button variant="contained" color="success" onClick={handleOpenAddNewDropdownDialog}>
                                 Add New Dropdown
                             </Button>
-                            <Dialog open={open} onClose={handleClose}>
+                            <Dialog open={open} 
+                                onClose={(event, reason) => {
+                                    if (reason !== 'backdropClick') {
+                                        handleClose();
+                                    }
+                                }}
+                            >
                                 <DialogTitle fontSize={25} fontWeight="bold">
                                     Add New Dropdown
                                     <IconButton
@@ -394,7 +400,13 @@ const DropdownPage = () => {
             </Box>
             <DropdownTable dropdowns={dropdowns} onDelete={handleDelete} onEdit={handleEdit} />
             {showEditForm && (
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} 
+                    onClose={(event, reason) => {
+                        if (reason !== 'backdropClick') {
+                            handleClose();
+                        }
+                    }}
+                >
                     <DialogTitle fontSize={25} fontWeight="bold">
                         Edit {originalCategoryName}
                         <IconButton

@@ -142,7 +142,7 @@ const DeliveryCategoryPage = () => {
 
     const validateForm = () => {
         let tempErrors = {};
-        tempErrors.name = deliveryCategoryForm.categoryName ? "" : "This field is required.";
+        tempErrors.categoryName = deliveryCategoryForm.categoryName ? "" : "This field is required.";
         setErrors(tempErrors);
         return Object.values(tempErrors).every((x) => x === "");
     };
@@ -205,7 +205,13 @@ const DeliveryCategoryPage = () => {
                             <Button variant="contained" color="success" onClick={handleOpenAddNewDeliveryCategoryForm}>
                                 Add New DeliveryCategory
                             </Button>
-                            <Dialog open={open} onClose={handleClose}>
+                            <Dialog open={open}
+                                onClose={(event, reason) => {
+                                    if (reason !== 'backdropClick') {
+                                        handleClose();
+                                    }
+                                }}
+                            >
                                 <DialogTitle fontSize={25} fontWeight="bold">
                                     Add New DeliveryCategory
                                     <IconButton
@@ -297,7 +303,13 @@ const DeliveryCategoryPage = () => {
             </Box>
             <DeliveryCategoryTable deliveryCategories={deliveryCategories} onDelete={handleDelete} onEdit={handleEdit} />
             {showEditForm && (
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} 
+                    onClose={(event, reason) => {
+                        if (reason !== 'backdropClick') {
+                            handleClose();
+                        }
+                    }}
+                >
                     <DialogTitle fontSize={25} fontWeight="bold">
                         Edit {originalCategoryName}
                         <IconButton

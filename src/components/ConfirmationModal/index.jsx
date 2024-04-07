@@ -12,7 +12,13 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const ConfirmationModal = ({ open, message, onConfirm, onCancel }) => {
   return (
-    <Dialog open={open} onClose={onCancel}>
+    <Dialog open={open} 
+            onClose={(event, reason) => {
+              if (reason !== 'backdropClick') {
+                onCancel();
+              }
+            }}
+    >
       <DialogTitle>
         Confirmation
         <IconButton
