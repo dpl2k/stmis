@@ -106,7 +106,7 @@ const DineInCategoryPage = () => {
     });
 
     const handleInputChange = (event) => {
-        const newValue = (event.target.value) ? event.target.value : null;
+        const newValue = (!event.target.value || event.target.value === "None") ? null : event.target.value;
         setDineInCategoryForm({
             ...dineInCategoryForm,
             [event.target.name]: newValue,
@@ -255,12 +255,14 @@ const DineInCategoryPage = () => {
                                                 <Select
                                                     labelId="parentCategoryLabel"
                                                     id="parentCategory"
-                                                    value={dineInCategoryForm.parentCategoryId || ''}
+                                                    value={dineInCategoryForm.parentCategoryId || 'None'}
                                                     onChange={handleInputChange}
                                                     label="Parent Category"
                                                     name="parentCategoryId"
                                                 >
-                                                    <MenuItem value="">None</MenuItem>
+                                                    <MenuItem value="None">
+                                                        None
+                                                    </MenuItem>
                                                     {dineInCategories.map(category => (
                                                         <MenuItem key={category.categoryId} value={category.categoryId}>
                                                             {category.categoryName}
@@ -345,12 +347,14 @@ const DineInCategoryPage = () => {
                                     <Select
                                         labelId="parentCategoryLabel"
                                         id="parentCategory"
-                                        value={dineInCategoryForm.parentCategoryId || ''}
+                                        value={dineInCategoryForm.parentCategoryId || 'None'}
                                         onChange={handleInputChange}
                                         label="Parent Category"
                                         name="parentCategoryId"
                                     >
-                                        <MenuItem value="">None</MenuItem>
+                                        <MenuItem value="None">
+                                            None
+                                        </MenuItem>
                                         {dineInCategories
                                             .filter(category => category.categoryId !== editDineInCategoryId) // Exclude the current edit category
                                             .map(category => (

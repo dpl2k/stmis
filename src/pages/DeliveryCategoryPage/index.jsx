@@ -106,7 +106,7 @@ const DeliveryCategoryPage = () => {
     });
 
     const handleInputChange = (event) => {
-        const newValue = (event.target.value) ? event.target.value : null;
+        const newValue = (!event.target.value || event.target.value === "None") ? null : event.target.value;
         setDeliveryCategoryForm({
             ...deliveryCategoryForm,
             [event.target.name]: newValue,
@@ -255,12 +255,14 @@ const DeliveryCategoryPage = () => {
                                                 <Select
                                                     labelId="parentCategoryLabel"
                                                     id="parentCategory"
-                                                    value={deliveryCategoryForm.parentCategoryId || ''}
+                                                    value={deliveryCategoryForm.parentCategoryId || 'None'}
                                                     onChange={handleInputChange}
                                                     label="Parent Category"
                                                     name="parentCategoryId"
                                                 >
-                                                    <MenuItem value="">None</MenuItem>
+                                                    <MenuItem value="None">
+                                                        None
+                                                    </MenuItem>
                                                     {deliveryCategories.map(category => (
                                                         <MenuItem key={category.categoryId} value={category.categoryId}>
                                                             {category.categoryName}
@@ -345,12 +347,14 @@ const DeliveryCategoryPage = () => {
                                     <Select
                                         labelId="parentCategoryLabel"
                                         id="parentCategory"
-                                        value={deliveryCategoryForm.parentCategoryId || ''}
+                                        value={deliveryCategoryForm.parentCategoryId || 'None'}
                                         onChange={handleInputChange}
                                         label="Parent Category"
                                         name="parentCategoryId"
                                     >
-                                        <MenuItem value="">None</MenuItem>
+                                        <MenuItem value="None">
+                                            None
+                                        </MenuItem>
                                         {deliveryCategories
                                             .filter(category => category.categoryId !== editDeliveryCategoryId) // Exclude the current edit category
                                             .map(category => (

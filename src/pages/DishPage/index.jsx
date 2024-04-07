@@ -147,7 +147,7 @@ const DishPage = () => {
   });
 
   const handleInputChange = (event) => {
-    const newValue = (event.target.value) ? event.target.value : null;
+    const newValue = (!event.target.value || event.target.value === "None") ? null : event.target.value;
     setDishForm({
       ...dishForm,
       [event.target.name]: newValue,
@@ -235,7 +235,7 @@ const DishPage = () => {
           throw new Error("Failed to add new dish. Please try again.");
         }
         setSnackbarMessage("Successfully added new dish");
-        setSnackbarSeverity("success");
+        setSnackbarSeverity("info");
         setOpenSnackbar(true);
         handleClose();
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
@@ -256,7 +256,7 @@ const DishPage = () => {
           throw new Error("Failed to update dish. Please try again.");
         }
         setSnackbarMessage("Successfully updated dish");
-        setSnackbarSeverity("success");
+        setSnackbarSeverity("info");
         setOpenSnackbar(true);
         handleClose();
         setReloadTable(prevState => !prevState); // Toggle reloadTable state
@@ -578,27 +578,17 @@ const DishPage = () => {
                       <Typography variant="h7">DineIn Category</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      {/* <TextField
-                        required={true}
-                        name="dineInCategory"
-                        value={dishForm.dineInCategory}
-                        onChange={handleInputChange}
-                        fullWidth
-                        placeholder="Enter DineIn Category"
-                        error={Boolean(errors.dineInCategory)}
-                        helperText={errors.dineInCategory}
-                      /> */}
                       <FormControl fullWidth variant="outlined">
                         <InputLabel id="dineInCategoryLabel">DineInCategory</InputLabel>
                         <Select
                           labelId="dineInCategoryLabel"
                           id="dineInCategory"
-                          value={dishForm.dineInCategoryId || ''}
+                          value={dishForm.dineInCategoryId || 'None'}
                           onChange={handleInputChange}
                           label="DineIn Category"
                           name="dineInCategoryId"
                         >
-                          <MenuItem value="">None</MenuItem>
+                          <MenuItem value="None">None</MenuItem>
                           {dineInCategories.map(category => (
                             <MenuItem key={category.categoryId} value={category.categoryId}>
                               {category.categoryName}
@@ -618,27 +608,17 @@ const DishPage = () => {
                       <Typography variant="h7">Delivery Category</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      {/* <TextField
-                        required={true}
-                        name="deliveryCategory"
-                        value={dishForm.deliveryCategory}
-                        onChange={handleInputChange}
-                        fullWidth
-                        placeholder="Enter Delivery Category"
-                        error={Boolean(errors.deliveryCategory)}
-                        helperText={errors.deliveryCategory}
-                      /> */}
                       <FormControl fullWidth variant="outlined">
                         <InputLabel id="deliveryCategoryLabel">DeliveryCategory</InputLabel>
                         <Select
                           labelId="deliveryCategoryLabel"
                           id="deliveryCategory"
-                          value={dishForm.deliveryCategoryId || ''}
+                          value={dishForm.deliveryCategoryId || 'None'}
                           onChange={handleInputChange}
                           label="Delivery Category"
                           name="deliveryCategoryId"
                         >
-                          <MenuItem value="">None</MenuItem>
+                          <MenuItem value="None">None</MenuItem>
                           {deliveryCategories.map(category => (
                             <MenuItem key={category.categoryId} value={category.categoryId}>
                               {category.categoryName}
@@ -966,27 +946,17 @@ const DishPage = () => {
                 <Typography variant="h7">DineIn Category</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                {/* <TextField
-                  required={true}
-                  name="dineInCategory"
-                  value={dishForm.dineInCategory}
-                  onChange={handleInputChange}
-                  fullWidth
-                  placeholder="Enter DineIn Category"
-                  error={Boolean(errors.dineInCategory)}
-                  helperText={errors.dineInCategory}
-                /> */}
                 <FormControl fullWidth variant="outlined">
                   <InputLabel id="dineInCategoryLabel">DineInCategory</InputLabel>
                   <Select
                     labelId="dineInCategoryLabel"
                     id="dineInCategory"
-                    value={dishForm.dineInCategoryId || ''}
+                    value={dishForm.dineInCategoryId || 'None'}
                     onChange={handleInputChange}
                     label="DineIn Category"
                     name="dineInCategoryId"
                   >
-                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="None">None</MenuItem>
                     {dineInCategories.map(category => (
                       <MenuItem key={category.categoryId} value={category.categoryId}>
                         {category.categoryName}
@@ -1006,27 +976,17 @@ const DishPage = () => {
                 <Typography variant="h7">Delivery Category</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                {/* <TextField
-                  required={true}
-                  name="deliveryCategory"
-                  value={dishForm.deliveryCategory}
-                  onChange={handleInputChange}
-                  fullWidth
-                  placeholder="Enter Delivery Category"
-                  error={Boolean(errors.deliveryCategory)}
-                  helperText={errors.deliveryCategory}
-                /> */}
                 <FormControl fullWidth variant="outlined">
                   <InputLabel id="deliveryCategoryLabel">DeliveryCategory</InputLabel>
                   <Select
                     labelId="deliveryCategoryLabel"
                     id="deliveryCategory"
-                    value={dishForm.deliveryCategoryId || ''}
+                    value={dishForm.deliveryCategoryId || 'None'}
                     onChange={handleInputChange}
                     label="Delivery Category"
                     name="deliveryCategoryId"
                   >
-                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="None">None</MenuItem>
                     {deliveryCategories.map(category => (
                       <MenuItem key={category.categoryId} value={category.categoryId}>
                         {category.categoryName}
