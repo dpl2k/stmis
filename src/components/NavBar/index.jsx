@@ -48,7 +48,7 @@ const Navbar = () => {
               to="/restaurantpage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              Restaurant Page
+              Restaurant Configure
             </NavLink>
           </MenuItem>
           <MenuItem onClick={handleClose}>
@@ -56,7 +56,7 @@ const Navbar = () => {
               to="/dropdownpage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              Dropdown Page
+              Dropdown Configure
             </NavLink>
           </MenuItem>
           <MenuItem onClick={handleClose}>
@@ -64,7 +64,7 @@ const Navbar = () => {
               to="/dineincategorypage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              DineIn Category Page
+              DineIn Category Configure
             </NavLink>
           </MenuItem>
           <MenuItem onClick={handleClose}>
@@ -72,7 +72,7 @@ const Navbar = () => {
               to="/deliverycategorypage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              Delivery Category Page
+              Delivery Category Configure
             </NavLink>
           </MenuItem>
           <MenuItem onClick={handleClose}>
@@ -80,7 +80,7 @@ const Navbar = () => {
               to="/dishpage"
               style={{ textDecoration: "none", color: "black" }}
             >
-              Dishes Page
+              Dishes Configure
             </NavLink>
           </MenuItem>
         </Menu>

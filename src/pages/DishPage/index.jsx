@@ -28,13 +28,16 @@ import {
   deleteDish,
   updateDish,
   getAllDeliveryCategories,
-  getAllDineInCategories
+  getAllDineInCategories,
+  getDropdownByModuleAndType
 } from "../../api";
 
 const DishPage = () => {
   const [dishes, setDishes] = useState([]);
   const [deliveryCategories, setDeliveryCategories] = useState([]);
   const [dineInCategories, setDineInCategories] = useState([]);
+  const [dineInTypes, setDineInTypes] = useState([]);
+  const [deliveryTypes, setDeliveryTypes] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [editDishId, setEditDishId] = useState(null);
@@ -70,6 +73,8 @@ const DishPage = () => {
     fetchDishes();
     fetchDeliveryCategories();
     fetchDineInCategories();
+    fetchDineInTypes();
+    fetchDeliveryTypes();
   }, [reloadTable]);
 
   const fetchDeliveryCategories = async () => {
@@ -95,6 +100,34 @@ const DishPage = () => {
       setDineInCategories(data.result);
     } catch (error) {
       setSnackbarMessage("Failed to get dine in categories. Please wait and try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchDineInTypes = async () => {
+    try {
+      const data = await getDropdownByModuleAndType("DineIn", "DishType");
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get DineInTypes. Please wait and try again.");
+      }
+      setDineInTypes(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get DineInTypes. Please wait and try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchDeliveryTypes = async () => {
+    try {
+      const data = await getDropdownByModuleAndType("Delivery", "DishType");
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get DeliveryTypes. Please wait and try again.");
+      }
+      setDeliveryTypes(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get DeliveryTypes. Please wait and try again.");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
@@ -174,6 +207,8 @@ const DishPage = () => {
         allergy: dishToEdit.allergy,
         price: dishToEdit.price,
         imageUrl: dishToEdit.imageUrl,
+        dineInType: dishToEdit.dineInType,
+        deliveryType:dishToEdit.deliveryType,
         isAvailable: dishToEdit.isAvailable,
         sellingDate: dishToEdit.sellingDate,
         dineInCategoryId: dishToEdit.dineInCategory ? dishToEdit.dineInCategory.categoryId: null,
@@ -457,14 +492,24 @@ const DishPage = () => {
                       <Typography variant="h7">DineIn Type</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      <TextField
-                        required={true}
-                        name="dineInType"
-                        value={dishForm.dineInType}
-                        onChange={handleInputChange}
-                        fullWidth
-                        placeholder="Enter dineIn type"
-                      />
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel id="dineInTypeLabel">DineInType</InputLabel>
+                        <Select
+                          labelId="dineInTypeLabel"
+                          id="dineInType"
+                          value={dishForm.dineInType || 'None'}
+                          onChange={handleInputChange}
+                          label="DineIn Type"
+                          name="dineInType"
+                        >
+                          <MenuItem value="None">None</MenuItem>
+                          {dineInTypes.map(dineInType => (
+                            <MenuItem key={dineInType.dropdownId} value={dineInType.value}>
+                              {dineInType.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid
                       item
@@ -477,14 +522,24 @@ const DishPage = () => {
                       <Typography variant="h7">Delivery Type</Typography>
                     </Grid>
                     <Grid item xs={12} sm={8}>
-                      <TextField
-                        required={true}
-                        name="deliveryType"
-                        value={dishForm.deliveryType}
-                        onChange={handleInputChange}
-                        fullWidth
-                        placeholder="Enter delivery type"
-                      />
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel id="deliveryTypeLabel">DeliveryType</InputLabel>
+                        <Select
+                          labelId="deliveryTypeLabel"
+                          id="deliveryType"
+                          value={dishForm.deliveryType || 'None'}
+                          onChange={handleInputChange}
+                          label="Delivery Type"
+                          name="deliveryType"
+                        >
+                          <MenuItem value="None">None</MenuItem>
+                          {deliveryTypes.map(deliveryType => (
+                            <MenuItem key={deliveryType.dropdownId} value={deliveryType.value}>
+                              {deliveryType.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid
                       item
@@ -811,14 +866,24 @@ const DishPage = () => {
                 <Typography variant="h7">DineIn Type</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <TextField
-                  required={true}
-                  name="dineInType"
-                  value={dishForm.dineInType}
-                  onChange={handleInputChange}
-                  fullWidth
-                  placeholder="Enter dineIn type"
-                />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="dineInTypeLabel">DineInType</InputLabel>
+                  <Select
+                    labelId="dineInTypeLabel"
+                    id="dineInType"
+                    value={dishForm.dineInType || 'None'}
+                    onChange={handleInputChange}
+                    label="DineIn Type"
+                    name="dineInType"
+                  >
+                    <MenuItem value="None">None</MenuItem>
+                    {dineInTypes.map(dineInType => (
+                      <MenuItem key={dineInType.dropdownId} value={dineInType.value}>
+                        {dineInType.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid
                 item
@@ -831,14 +896,24 @@ const DishPage = () => {
                 <Typography variant="h7">Delivery Type</Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <TextField
-                  required={true}
-                  name="deliveryType"
-                  value={dishForm.deliveryType}
-                  onChange={handleInputChange}
-                  fullWidth
-                  placeholder="Enter delivery type"
-                />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="deliveryTypeLabel">DeliveryType</InputLabel>
+                  <Select
+                    labelId="deliveryTypeLabel"
+                    id="deliveryType"
+                    value={dishForm.deliveryType || 'None'}
+                    onChange={handleInputChange}
+                    label="Delivery Type"
+                    name="deliveryType"
+                  >
+                    <MenuItem value="None">None</MenuItem>
+                    {deliveryTypes.map(deliveryType => (
+                      <MenuItem key={deliveryType.dropdownId} value={deliveryType.value}>
+                        {deliveryType.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid
                 item

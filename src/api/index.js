@@ -1,5 +1,5 @@
-const API_URL = 'https://localhost:7101/api'; // replace with your API base URL
-// const API_URL = 'http://alicestore.runasp.net/api'; // replace with your API base URL
+// const API_URL = 'https://localhost:7101/api'; // replace with your API base URL
+const API_URL = 'http://alicestore.runasp.net/api'; // replace with your API base URL
 
 //Restaurant
 export const getAllRestaurants = async () => {
@@ -45,6 +45,11 @@ export const deleteRestaurant = async (restaurantId) => {
 //Dropdowns
 export const getAllDropdowns = async () => {
     const response = await fetch(`${API_URL}/dropdowns`);
+    return response.json();
+};
+
+export const getDropdownByModuleAndType = async (module, type) => {
+    const response = await fetch(`${API_URL}/dropdowns?module=${module}&type=${type}&activeStatus=true`);
     return response.json();
 };
 
