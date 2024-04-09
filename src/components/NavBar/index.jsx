@@ -24,7 +24,7 @@ const Navbar = () => {
         >
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
-              User Page
+              User View
             </Button>
           )}
         </NavLink>
