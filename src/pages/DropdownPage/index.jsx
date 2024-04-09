@@ -14,6 +14,11 @@ import {
     Alert,
     FormControlLabel,
     Checkbox,
+    FormControl,
+    MenuItem,
+    InputLabel,
+    Select,
+    FormHelperText
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DropdownTable from "../../components/DropdownTable";
@@ -108,10 +113,20 @@ const DropdownPage = () => {
     });
 
     const handleInputChange = (event) => {
-        setDropdownForm({
-            ...dropdownForm,
-            [event.target.name]: event.target.value,
-        });
+        setErrors({});
+        const { name, value } = event.target;
+        if (name === 'name') {
+            setDropdownForm({
+                ...dropdownForm,
+                name: value,
+                value: value, // Set the value field equal to the name field
+            });
+        } else {
+            setDropdownForm({
+                ...dropdownForm,
+                [name]: value,
+            });
+        }
     };
 
     const handleCheckboxChange = (event) => {
@@ -156,20 +171,22 @@ const DropdownPage = () => {
         setShowEditForm(false); // Ensure edit form is not shown
     };
 
+    const isDuplicateName = (name) => {
+        return dropdowns.some(dropdown => dropdown.name === name);
+    };
+
     const validateForm = () => {
         let tempErrors = {};
-        tempErrors.name = dropdownForm.name ? "" : "This field is required.";
-        tempErrors.value = dropdownForm.value ? "" : "This field is required.";
+        tempErrors.name = dropdownForm.name ? ((dropdownForm.name === originalCategoryName || !isDuplicateName(dropdownForm.name)) ? "" : "Name already exists") : "This field is required";
         tempErrors.type = dropdownForm.type ? "" : "This field is required.";
         tempErrors.module = dropdownForm.module ? "" : "This field is required.";
-        tempErrors.description = dropdownForm.description ? "" : "This field is required.";
         setErrors(tempErrors);
         return Object.values(tempErrors).every((x) => x === "");
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (validateForm()) {
+        if (validateForm() && !isDuplicateName(dropdownForm.name)) {
             try {
                 const result = await addNewDropdown(dropdownForm);
                 if (result.statusCode !== 200) {
@@ -190,7 +207,7 @@ const DropdownPage = () => {
 
     const handleEditSubmit = async (event) => {
         event.preventDefault();
-        if (validateForm()) {
+        if (validateForm() && (dropdownForm.name === originalCategoryName || !isDuplicateName(dropdownForm.name))) {
             try {
                 const result = await updateDropdown(editDropdownId, dropdownForm);
                 if (result.statusCode !== 200) {
@@ -276,14 +293,17 @@ const DropdownPage = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={8}>
                                             <TextField
-                                                required={true}
                                                 name="value"
                                                 value={dropdownForm.value}
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 placeholder="Enter dropdown value"
-                                                error={Boolean(errors.value)}
-                                                helperText={errors.value}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                    style: {
+                                                        backgroundColor: 'lightgray',
+                                                    },
+                                                }}
                                             />
                                         </Grid>
                                         <Grid
@@ -319,16 +339,21 @@ const DropdownPage = () => {
                                             <Typography variant="h7">Module</Typography>
                                         </Grid>
                                         <Grid item xs={12} sm={8}>
-                                            <TextField
-                                                required={true}
-                                                name="module"
-                                                value={dropdownForm.module}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                placeholder="Enter dropdown module"
-                                                error={Boolean(errors.module)}
-                                                helperText={errors.module}
-                                            />
+                                            <FormControl fullWidth variant="outlined" error={Boolean(errors.module)}>
+                                                <InputLabel id="moduleLabel">Module</InputLabel>
+                                                <Select
+                                                    labelId="moduleLabel"
+                                                    id="module"
+                                                    value={dropdownForm.module}
+                                                    onChange={handleInputChange}
+                                                    label="Module"
+                                                    name="module"
+                                                >
+                                                    <MenuItem value="DineIn">DineIn</MenuItem>
+                                                    <MenuItem value="Delivery">Delivery</MenuItem>
+                                                </Select>
+                                                {errors.module && <FormHelperText>{errors.module}</FormHelperText>}
+                                            </FormControl>
                                         </Grid>
                                         <Grid
                                             item
@@ -348,8 +373,6 @@ const DropdownPage = () => {
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 placeholder="Enter dropdown description"
-                                                error={Boolean(errors.description)}
-                                                helperText={errors.description}
                                             />
                                         </Grid>
                                         <Grid
@@ -452,14 +475,17 @@ const DropdownPage = () => {
                             </Grid>
                             <Grid item xs={12} sm={8}>
                                 <TextField
-                                    required={true}
                                     name="value"
                                     value={dropdownForm.value}
                                     onChange={handleInputChange}
                                     fullWidth
                                     placeholder="Enter dropdown value"
-                                    error={Boolean(errors.value)}
-                                    helperText={errors.value}
+                                    InputProps={{
+                                        readOnly: true,
+                                        style: {
+                                            backgroundColor: 'lightgray',
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid
@@ -495,16 +521,21 @@ const DropdownPage = () => {
                                 <Typography variant="h7">Module</Typography>
                             </Grid>
                             <Grid item xs={12} sm={8}>
-                                <TextField
-                                    required={true}
-                                    name="module"
-                                    value={dropdownForm.module}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                    placeholder="Enter dropdown module"
-                                    error={Boolean(errors.module)}
-                                    helperText={errors.module}
-                                />
+                                <FormControl fullWidth variant="outlined" error={Boolean(errors.module)}>
+                                    <InputLabel id="moduleLabel">Module</InputLabel>
+                                    <Select
+                                        labelId="moduleLabel"
+                                        id="module"
+                                        value={dropdownForm.module}
+                                        onChange={handleInputChange}
+                                        label="Module"
+                                        name="module"
+                                    >
+                                        <MenuItem value="DineIn">DineIn</MenuItem>
+                                        <MenuItem value="Delivery">Delivery</MenuItem>
+                                    </Select>
+                                    {errors.module && <FormHelperText>{errors.module}</FormHelperText>}
+                                </FormControl>
                             </Grid>
                             <Grid
                                 item
@@ -524,8 +555,6 @@ const DropdownPage = () => {
                                     onChange={handleInputChange}
                                     fullWidth
                                     placeholder="Enter dropdown description"
-                                    error={Boolean(errors.description)}
-                                    helperText={errors.description}
                                 />
                             </Grid>
                             <Grid
