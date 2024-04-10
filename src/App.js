@@ -5,6 +5,7 @@ import DropdownPage from './pages/DropdownPage';
 import DishPage from './pages/DishPage';
 import DineInCategoryPage from './pages/DineInCategoryPage';
 import DeliveryCategoryPage from './pages/DeliveryCategoryPage';
+import POSPage from './pages/POSPage';
 import UserPage from './pages/UserPage';
 import Navbar from './components/NavBar';
 
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/dropdownpage" element={<DropdownPage />} />
         <Route path="/dineincategorypage" element={<DineInCategoryPage />} />
         <Route path="/deliverycategorypage" element={<DeliveryCategoryPage />} />
+        <Route path="/pospage" element={<POSPage />} />
         <Route path="/userpage" element={<UserPage />} />
       </Routes>
     </Router>

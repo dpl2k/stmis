@@ -28,6 +28,17 @@ const Navbar = () => {
             </Button>
           )}
         </NavLink>
+        <NavLink
+          to="/pospage"
+          end={true}
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          {({ isActive }) => (
+            <Button color="inherit" className={isActive ? "active-tab" : ""}>
+              POS View
+            </Button>
+          )}
+        </NavLink>
         <Button
           aria-controls="admin-menu"
           aria-haspopup="true"
