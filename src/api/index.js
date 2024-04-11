@@ -1,5 +1,5 @@
 // const API_URL = 'https://localhost:7101/api'; // replace with your API base URL
-const API_URL = 'http://alicestore.runasp.net/api'; // replace with your API base URL
+const API_URL = 'https://alicerestaurant.azurewebsites.net/api'; // replace with your API base URL
 
 //Restaurant
 export const getAllRestaurants = async () => {
