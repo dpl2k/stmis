@@ -1,5 +1,5 @@
-const API_URL = 'https://localhost:7101/api';
-// const API_URL = 'https://alicerestaurant.azurewebsites.net/api';
+// const API_URL = 'https://localhost:7101/api';
+const API_URL = 'https://alicerestaurant.azurewebsites.net/api';
 
 //Restaurant
 export const getAllRestaurants = async () => {
