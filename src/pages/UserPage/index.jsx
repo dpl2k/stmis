@@ -109,6 +109,9 @@ const UserPage = () => {
     const fetchAllDishes = async () => {
         try {
             const dishesData = await getAllDishes();
+            if (dishesData.statusCode !== 200) {
+                throw new Error("Failed to get dishes");
+            }
             setDishes(dishesData.result);
         } catch (error) {
             setSnackbarMessage("Failed to get dishes");
@@ -164,6 +167,7 @@ const UserPage = () => {
                                 onChange={(e) => setSelectedDeliveryType(e.target.value)}
                                 label="Delivery Type"
                                 name="deliveryType"
+                                input={<OutlinedInput label="Type" />}
                             >
                                 {deliveryTypes.map(deliveryType => (
                                     <MenuItem key={deliveryType.dropdownId} value={deliveryType.value}>
@@ -181,6 +185,7 @@ const UserPage = () => {
                                 onChange={(e) => setSelectedDeliveryCategory(e.target.value)}
                                 label="Delivery Category"
                                 name="deliveryCategoryId"
+                                input={<OutlinedInput label="Category" />}
                             >
                                 {deliveryCategories.map(category => (
                                     <MenuItem key={category.categoryId} value={category.categoryId}>
@@ -215,7 +220,7 @@ const UserPage = () => {
                         </Button>
                     </Box>
                     <Grid container spacing={2}>
-                        {dishes.map((dish) => (
+                        {dishes.length > 0 ? dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
                                 <Card>
                                     <CardMedia
@@ -226,16 +231,22 @@ const UserPage = () => {
                                         alt={dish.dishName}
                                     />
                                     <CardContent>
-                                        <Typography variant="h6">{dish.dishName}</Typography>
+                                        <Typography variant="h5">{dish.dishName}</Typography>
                                         <Typography variant="body1">{dish.description}</Typography>
                                         <Typography variant="body1"><b>Type:</b> {dish.deliveryType ? dish.deliveryType : "N/A"}</Typography>
+                                        <Typography variant="body1"><b>Category:</b> {dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
                                         <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
-                        ))}
+                        )) : 
+                        (
+                            <Grid item xs={12}>
+                                <Typography variant="h5">No dishes found</Typography>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

@@ -107,6 +107,9 @@ const POSPage = () => {
     const fetchAllDishes = async () => {
         try {
             const dishesData = await getAllDishes();
+            if (dishesData.statusCode !== 200) {
+                throw new Error("Failed to get dishes");
+            }
             setDishes(dishesData.result);
         } catch (error) {
             setSnackbarMessage("Failed to get dishes");
@@ -118,6 +121,9 @@ const POSPage = () => {
     const handleApply = async () => {
         try {
             const data = await getPOSMenu(selectedRestaurant, selectedDineInType, selectedDineInCategory);
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get menu items");
+            }
             setDishes(data.result);
         } catch (error) {
             setSnackbarMessage("Failed to get menu items. Please try again.");
@@ -210,6 +216,7 @@ const POSPage = () => {
                                 onChange={(e) => setSelectedDineInType(e.target.value)}
                                 label="DineIn Type"
                                 name="dineInType"
+                                input={<OutlinedInput label="Type" />}
                             >
                                 {dineInTypes.map(dineInType => (
                                     <MenuItem key={dineInType.dropdownId} value={dineInType.value}>
@@ -227,6 +234,7 @@ const POSPage = () => {
                                 onChange={(e) => setSelectedDineInCategory(e.target.value)}
                                 label="DineIn Category"
                                 name="dineInCategoryId"
+                                input={<OutlinedInput label="Category" />}
                             >
                                 {dineInCategories.map(category => (
                                     <MenuItem key={category.categoryId} value={category.categoryId}>
@@ -261,7 +269,7 @@ const POSPage = () => {
                         </Button>
                     </Box>
                     <Grid container spacing={2}>
-                        {dishes.map((dish) => (
+                        {dishes.length > 0 ? dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
                                 <Card>
                                     <CardMedia
@@ -272,9 +280,10 @@ const POSPage = () => {
                                         alt={dish.dishName}
                                     />
                                     <CardContent>
-                                        <Typography variant="h6">{dish.dishName}</Typography>
+                                        <Typography variant="h5">{dish.dishName}</Typography>
                                         <Typography variant="body1">{dish.description}</Typography>
                                         <Typography variant="body1"><b>Type:</b> {dish.dineInType ? dish.dineInType : "N/A"}</Typography>
+                                        <Typography variant="body1"><b>Category:</b> {dish.dineInCategory ? dish.dineInCategory.categoryName : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
                                         <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
@@ -289,7 +298,12 @@ const POSPage = () => {
                                     </CardContent>
                                 </Card>
                             </Grid>
-                        ))}
+                        )) : 
+                        (
+                            <Grid item xs={12}>
+                                <Typography variant="h5">No dishes found</Typography>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

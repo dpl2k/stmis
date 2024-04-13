@@ -34,7 +34,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Selling Date</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Category</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Delivery Category</TableCell>
-                        {/* <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Restaurants</TableCell> */}
+                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Assigned Restaurants</TableCell>
                         {isAdmin && (
                             <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
                         )}
@@ -62,14 +62,14 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                             <TableCell>{(dish.sellingDate !== null) ? new Date(dish.sellingDate).toISOString().split('T')[0] : "N/A"}</TableCell>
                             <TableCell>{dish.dineInCategory ? dish.dineInCategory.categoryName: "N/A"}</TableCell>
                             <TableCell>{dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</TableCell>
-                            {/* <TableCell>
+                            <TableCell>
                                 {dish.restaurants && dish.restaurants.length > 0
                                     ? dish.restaurants.map((restaurant, index) => (
                                         <div key={index}>{restaurant.name}</div>
                                     ))
                                     : "N/A"
                                 }
-                            </TableCell> */}
+                            </TableCell>
                             {isAdmin && (
                                 <TableCell>
                                     <Box display="flex">
