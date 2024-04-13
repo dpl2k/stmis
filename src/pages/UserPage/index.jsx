@@ -13,42 +13,91 @@ import {
     Card,
     CardContent,
     Typography,
-    CardMedia,
-    // IconButton
+    CardMedia
 } from "@mui/material";
-// import CloseIcon from "@mui/icons-material/Close";
 import { 
     getAllRestaurants, 
-    // getCurrentMenu, 
     getAllDishes, 
-    getDishesByRestaurantId 
+    getDeliveryMenu,
+    getAllDeliveryCategories,
+    getDropdownByModuleAndType
 } from "../../api";
 
 const UserPage = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [selectedRestaurant, setSelectedRestaurant] = useState("");
+    const [deliveryCategories, setDeliveryCategories] = useState([]);
+    const [selectedDeliveryCategory, setSelectedDeliveryCategory] = useState("");
+    const [deliveryTypes, setDeliveryTypes] = useState([]);
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
+    const [applyDisabled, setApplyDisabled] = useState(true);
+    const [clearDisabled, setClearDisabled] = useState(true);
     const [dishes, setDishes] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-    // const [orderItems, setOrderItems] = useState([]);
-    // const [paymentAmount, setPaymentAmount] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const restaurantData = await getAllRestaurants();
+                if (restaurantData.statusCode !== 200) {
+                    throw new Error("Failed to get restaurants");
+                }
                 setRestaurants(restaurantData.result);
                 const allDishesData = await getAllDishes();
+                if (allDishesData.statusCode !== 200) {
+                    throw new Error("Failed to get dishes");
+                }
                 setDishes(allDishesData.result);
             } catch (error) {
-                setSnackbarMessage("Failed to get restaurants. Please wait and try again.");
+                setSnackbarMessage("Failed to get data. Please wait and try again.");
                 setSnackbarSeverity("error");
                 setOpenSnackbar(true);
             }
         };
         fetchData();
+        fetchDeliveryCategories();
+        fetchDeliveryTypes();
     }, []);
+
+    useEffect(() => {
+        if (selectedRestaurant || selectedDeliveryCategory || selectedDeliveryType) {
+            setApplyDisabled(false);
+            setClearDisabled(false);
+        } else {
+            setApplyDisabled(true);
+            setClearDisabled(true);
+        }
+    }, [selectedRestaurant, selectedDeliveryCategory, selectedDeliveryType]);
+
+    const fetchDeliveryCategories = async () => {
+        try {
+            const data = await getAllDeliveryCategories();
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get categories");
+            }
+            setDeliveryCategories(data.result);
+        } catch (error) {
+            setSnackbarMessage("Failed to get categories. Please wait and try again.");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+        }
+    };
+
+    const fetchDeliveryTypes = async () => {
+        try {
+            const data = await getDropdownByModuleAndType("Delivery", "DishType");
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get Types");
+            }
+            setDeliveryTypes(data.result);
+        } catch (error) {
+            setSnackbarMessage("Failed to get types. Please wait and try again.");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+        }
+    };
 
     const handleCloseSnackbar = (reason) => {
         if (reason === "clickaway") {
@@ -70,14 +119,11 @@ const UserPage = () => {
 
     const handleApply = async () => {
         try {
-            if (selectedRestaurant) {
-                // const data = await getCurrentMenu(selectedRestaurant, "DineIn");
-                const data = await getDishesByRestaurantId(selectedRestaurant);
-                setDishes(data.result);
-            } else {
-                const allDishesData = await getAllDishes();
-                setDishes(allDishesData.result);
+            const data = await getDeliveryMenu(selectedRestaurant, selectedDeliveryType, selectedDeliveryCategory);
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get menu items");
             }
+            setDishes(data.result);
         } catch (error) {
             setSnackbarMessage("Failed to get menu items. Please try again.");
             setSnackbarSeverity("error");
@@ -85,62 +131,10 @@ const UserPage = () => {
         }
     };
 
-    // const addItemToOrder = (item) => {
-    //     const updatedOrder = [...orderItems];
-    //     const existingIndex = updatedOrder.findIndex(orderItem => orderItem.dishId === item.dishId);
-    //     if (existingIndex !== -1) {
-    //         updatedOrder[existingIndex].quantity++;
-    //     } else {
-    //         updatedOrder.push({ ...item, quantity: 1 });
-    //     }
-    //     setOrderItems(updatedOrder);
-    //     const totalAmount = updatedOrder.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
-    //     setPaymentAmount(totalAmount.toFixed(2));
-    // };
-
-    // const removeItemFromOrder = (itemId) => {
-    //     const updatedOrder = orderItems.filter(item => item.dishId !== itemId);
-    //     setOrderItems(updatedOrder);
-    //     const totalAmount = updatedOrder.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
-    //     setPaymentAmount(totalAmount.toFixed(2));
-    // };
-
     return (
         <Box p={3} pt={1}>
             <h1>Delivery Menu Page</h1>
             <Grid container spacing={2}>
-                {/* Sidebar for payment section */}
-                {/* <Grid item xs={12} md={4}>
-                    <Box mb={4}>
-                        <Typography variant="h4" style={{ color: "red" }}>Payment section</Typography>
-                        <Box mt={2}>
-                            {orderItems.map((item) => (
-                                <Box key={item.dishId} display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-                                    <Box display="flex" alignItems="center">
-                                        <CardMedia
-                                            component="img"
-                                            style={{ width: 50, height: 50, objectFit: 'cover' }}
-                                            image={item.imageUrl}
-                                            alt={item.dishName}
-                                        />
-                                        <Box ml={1}>
-                                            <Typography variant="body1">{item.dishName}</Typography>
-                                            <Typography variant="body2">Price: ${item.price}</Typography>
-                                            <Typography variant="body1">Quantity: {item.quantity}</Typography>
-                                        </Box>
-                                    </Box>
-                                    <IconButton
-                                        color="secondary"
-                                        onClick={() => removeItemFromOrder(item.dishId)}
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                </Box>
-                            ))}
-                        </Box>
-                        <Typography variant="h6">Total Amount: ${paymentAmount}</Typography>
-                    </Box>
-                </Grid> */}
                 <Grid item xs={12} md={12}>
                     <Box mb={4} display="flex" alignItems="center">
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
@@ -161,28 +155,65 @@ const UserPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
+                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                            <InputLabel id="deliveryTypeLabel">Type</InputLabel>
+                            <Select
+                                labelId="deliveryTypeLabel"
+                                id="deliveryType"
+                                value={selectedDeliveryType}
+                                onChange={(e) => setSelectedDeliveryType(e.target.value)}
+                                label="Delivery Type"
+                                name="deliveryType"
+                            >
+                                {deliveryTypes.map(deliveryType => (
+                                    <MenuItem key={deliveryType.dropdownId} value={deliveryType.value}>
+                                        {deliveryType.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                            <InputLabel id="deliveryCategoryLabel">Category</InputLabel>
+                            <Select
+                                labelId="deliveryCategoryLabel"
+                                id="deliveryCategory"
+                                value={selectedDeliveryCategory}
+                                onChange={(e) => setSelectedDeliveryCategory(e.target.value)}
+                                label="Delivery Category"
+                                name="deliveryCategoryId"
+                            >
+                                {deliveryCategories.map(category => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.categoryName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={handleApply}
-                            style={{ marginRight: '8px' }}
+                            disabled={applyDisabled}
+                            style={{ marginRight: '8px', height: '100%', padding: '15px' }}
                         >
-                            Apply Search
+                            Search
                         </Button>
                         <Button
                             variant="contained"
                             color="secondary"
+                            style={{ height: '100%', padding: '15px' }}
                             onClick={() => {
                                 setSelectedRestaurant("");
+                                setSelectedDeliveryType("");
+                                setSelectedDeliveryCategory("");
                                 setDishes([]);
                                 fetchAllDishes();
                             }}
+                            disabled={clearDisabled}
                         >
-                            Clear Filter
+                            Clear
                         </Button>
                     </Box>
-
-                    {/* Menu display */}
                     <Grid container spacing={2}>
                         {dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
@@ -197,18 +228,10 @@ const UserPage = () => {
                                     <CardContent>
                                         <Typography variant="h6">{dish.dishName}</Typography>
                                         <Typography variant="body1">{dish.description}</Typography>
-                                        <Typography variant="body1"><b>Type:</b> {dish.dineInType ? dish.dineInType : "N/A"}</Typography>
+                                        <Typography variant="body1"><b>Type:</b> {dish.deliveryType ? dish.deliveryType : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
                                         <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
-                                        {/* <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => addItemToOrder(dish)}
-                                            disabled={!dish.isAvailable}
-                                        >
-                                            Add to Order
-                                        </Button> */}
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -216,7 +239,6 @@ const UserPage = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            {/* Snackbar for notifications */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={5000}

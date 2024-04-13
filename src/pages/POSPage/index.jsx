@@ -18,15 +18,22 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { 
-    getAllRestaurants, 
-    // getCurrentMenu, 
+    getAllRestaurants,
     getAllDishes,
-    getDishesByRestaurantId
+    getDropdownByModuleAndType,
+    getAllDineInCategories,
+    getPOSMenu
 } from "../../api";
 
 const POSPage = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [selectedRestaurant, setSelectedRestaurant] = useState("");
+    const [dineInCategories, setDineInCategories] = useState([]);
+    const [selectedDineInCategory, setSelectedDineInCategory] = useState("");
+    const [dineInTypes, setDineInTypes] = useState([]);
+    const [selectedDineInType, setSelectedDineInType] = useState("");
+    const [applyDisabled, setApplyDisabled] = useState(true);
+    const [clearDisabled, setClearDisabled] = useState(true);
     const [dishes, setDishes] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -48,7 +55,47 @@ const POSPage = () => {
             }
         };
         fetchData();
+        fetchDineInCategories();
+        fetchDineInTypes();
     }, []);
+
+    useEffect(() => {
+        if (selectedRestaurant || selectedDineInType || selectedDineInCategory) {
+            setApplyDisabled(false);
+            setClearDisabled(false);
+        } else {
+            setApplyDisabled(true);
+            setClearDisabled(true);
+        }
+    }, [selectedRestaurant, selectedDineInType, selectedDineInCategory]);
+
+    const fetchDineInCategories = async () => {
+        try {
+            const data = await getAllDineInCategories();
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get categories");
+            }
+            setDineInCategories(data.result);
+        } catch (error) {
+            setSnackbarMessage("Failed to get categories");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+        }
+    };
+
+    const fetchDineInTypes = async () => {
+        try {
+            const data = await getDropdownByModuleAndType("DineIn", "DishType");
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get Types");
+            }
+            setDineInTypes(data.result);
+        } catch (error) {
+            setSnackbarMessage("Failed to get Types");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+        }
+    };
 
     const handleCloseSnackbar = (reason) => {
         if (reason === "clickaway") {
@@ -70,14 +117,8 @@ const POSPage = () => {
 
     const handleApply = async () => {
         try {
-            if (selectedRestaurant) {
-                // const data = await getCurrentMenu(selectedRestaurant, "DineIn");
-                const data = await getDishesByRestaurantId(selectedRestaurant);
-                setDishes(data.result);
-            } else {
-                const allDishesData = await getAllDishes();
-                setDishes(allDishesData.result);
-            }
+            const data = await getPOSMenu(selectedRestaurant, selectedDineInType, selectedDineInCategory);
+            setDishes(data.result);
         } catch (error) {
             setSnackbarMessage("Failed to get menu items. Please try again.");
             setSnackbarSeverity("error");
@@ -109,9 +150,8 @@ const POSPage = () => {
         <Box p={3} pt={1}>
             <h1>POS Menu Page</h1>
             <Grid container spacing={2}>
-                {/* Sidebar for payment section */}
                 <Grid item xs={12} md={4}>
-                    <Box mb={4}>
+                    <Box mb={4} style={{ backgroundColor: "lightyellow" }}>
                         <Typography variant="h4" style={{ color:"red"}}>Payment section</Typography>
                         <Box mt={2}>
                             {orderItems.map((item) => (
@@ -124,9 +164,9 @@ const POSPage = () => {
                                             alt={item.dishName}
                                         />
                                         <Box ml={1}>
-                                            <Typography variant="body1">{item.dishName}</Typography>
+                                            <Typography variant="body2">{item.dishName}</Typography>
                                             <Typography variant="body2">Price: ${item.price}</Typography>
-                                            <Typography variant="body1">Quantity: {item.quantity}</Typography>
+                                            <Typography variant="body2">Quantity: {item.quantity}</Typography>
                                         </Box>
                                     </Box>
                                     <IconButton
@@ -141,10 +181,7 @@ const POSPage = () => {
                         <Typography variant="h6">Total Amount: ${paymentAmount}</Typography>
                     </Box>
                 </Grid>
-
-                {/* Main content area */}
                 <Grid item xs={12} md={8}>
-                    {/* Restaurant and Menu selection */}
                     <Box mb={4} display="flex" alignItems="center">
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
                             <InputLabel id="restaurant-label">Restaurant</InputLabel>
@@ -164,28 +201,65 @@ const POSPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
+                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                            <InputLabel id="dineInTypeLabel">Type</InputLabel>
+                            <Select
+                                labelId="dineInTypeLabel"
+                                id="dineInType"
+                                value={selectedDineInType}
+                                onChange={(e) => setSelectedDineInType(e.target.value)}
+                                label="DineIn Type"
+                                name="dineInType"
+                            >
+                                {dineInTypes.map(dineInType => (
+                                    <MenuItem key={dineInType.dropdownId} value={dineInType.value}>
+                                        {dineInType.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                            <InputLabel id="dineInCategoryLabel">Category</InputLabel>
+                            <Select
+                                labelId="dineInCategoryLabel"
+                                id="dineInCategory"
+                                value={selectedDineInCategory}
+                                onChange={(e) => setSelectedDineInCategory(e.target.value)}
+                                label="DineIn Category"
+                                name="dineInCategoryId"
+                            >
+                                {dineInCategories.map(category => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.categoryName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={handleApply}
-                            style={{ marginRight: '8px' }}
+                            disabled={applyDisabled}
+                            style={{ marginRight: '8px', height: '100%', padding: '15px' }}
                         >
-                            Apply Search
+                            Search
                         </Button>
                         <Button
                             variant="contained"
                             color="secondary"
+                            style={{ height: '100%', padding: '15px' }}
                             onClick={() => {
                                 setSelectedRestaurant("");
+                                setSelectedDineInCategory("");
+                                setSelectedDineInType("");
                                 setDishes([]);
                                 fetchAllDishes();
                             }}
+                            disabled={clearDisabled}
                         >
-                            Clear Filter
+                            Clear
                         </Button>
                     </Box>
-
-                    {/* Menu display */}
                     <Grid container spacing={2}>
                         {dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
@@ -219,7 +293,6 @@ const POSPage = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            {/* Snackbar for notifications */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={5000}

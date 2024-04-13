@@ -24,7 +24,7 @@ const Navbar = () => {
         >
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
-              User View
+              Delivery Menu
             </Button>
           )}
         </NavLink>
@@ -35,7 +35,7 @@ const Navbar = () => {
         >
           {({ isActive }) => (
             <Button color="inherit" className={isActive ? "active-tab" : ""}>
-              POS View
+              POS Menu
             </Button>
           )}
         </NavLink>

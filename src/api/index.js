@@ -24,6 +24,46 @@ export const getDishesByRestaurantId = async (restaurantId) => {
     return response.json();
 }
 
+export const getDeliveryMenu = async (restaurantId, type, categoryId) => {
+    let base_url = `${API_URL}/dishes`;
+    const queryParams = [];
+    if (restaurantId) {
+        queryParams.push(`restaurantId=${restaurantId}`);
+    }
+    if (type) {
+        queryParams.push(`deliveryType=${type}`);
+    }
+    if (categoryId) {
+        queryParams.push(`deliveryCatId=${categoryId}`);
+    }
+
+    if (queryParams.length > 0) {
+        base_url += `?${queryParams.join("&")}`;
+    }
+    const response = await fetch(base_url);
+    return response.json();
+}
+
+export const getPOSMenu = async (restaurantId, type, categoryId) => {
+    let base_url = `${API_URL}/dishes`;
+    const queryParams = [];
+    if(restaurantId) {
+        queryParams.push(`restaurantId=${restaurantId}`);
+    }
+    if(type) {
+        queryParams.push(`dineInType=${type}`);
+    }
+    if(categoryId) {
+        queryParams.push(`dineInCatId=${categoryId}`);
+    }
+
+    if(queryParams.length > 0) {
+        base_url += `?${queryParams.join("&")}`;
+    }
+    const response = await fetch(base_url);
+    return response.json();
+}
+
 export const addNewRestaurant = async (restaurant) => {
     const response = await fetch(`${API_URL}/restaurants`, {
         method: 'POST',
