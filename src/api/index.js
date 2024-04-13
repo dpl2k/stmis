@@ -1,5 +1,5 @@
-// const API_URL = 'https://localhost:7101/api'; // replace with your API base URL
-const API_URL = 'https://alicerestaurant.azurewebsites.net/api'; // replace with your API base URL
+const API_URL = 'https://localhost:7101/api';
+// const API_URL = 'https://alicerestaurant.azurewebsites.net/api';
 
 //Restaurant
 export const getAllRestaurants = async () => {
@@ -18,6 +18,11 @@ export const getCurrentMenu = async (restaurantId, type) => {
         : await fetch(`${API_URL}/Restaurants/${restaurantId}/dishes?delivery=${type}`);
     return response.json();
 };
+
+export const getDishesByRestaurantId = async (restaurantId) => {
+    const response = await fetch(`${API_URL}/Restaurants/${restaurantId}/dishes`);
+    return response.json();
+}
 
 export const addNewRestaurant = async (restaurant) => {
     const response = await fetch(`${API_URL}/restaurants`, {

@@ -33,7 +33,8 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Status</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Selling Date</TableCell>
                         <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Category</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Delivery Category</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Delivery Category</TableCell>
+                        {/* <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Restaurants</TableCell> */}
                         {isAdmin && (
                             <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
                         )}
@@ -58,9 +59,17 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                             <TableCell>{dish.dineInType ? dish.dineInType : "N/A"}</TableCell>
                             <TableCell>{dish.deliveryType ? dish.deliveryType : "N/A"}</TableCell>
                             <TableCell>{dish.isAvailable ? "In stock" : "Out of stock"}</TableCell>
-                            <TableCell>{(dish.sellingDate !== null) ? new Date(dish.sellingDate).toLocaleDateString() : "N/A"}</TableCell>
+                            <TableCell>{(dish.sellingDate !== null) ? new Date(dish.sellingDate).toISOString().split('T')[0] : "N/A"}</TableCell>
                             <TableCell>{dish.dineInCategory ? dish.dineInCategory.categoryName: "N/A"}</TableCell>
-                            <TableCell>{dish.deliveryCategory ? dish.deliveryCategory.categoryName: "N/A"}</TableCell>
+                            <TableCell>{dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</TableCell>
+                            {/* <TableCell>
+                                {dish.restaurants && dish.restaurants.length > 0
+                                    ? dish.restaurants.map((restaurant, index) => (
+                                        <div key={index}>{restaurant.name}</div>
+                                    ))
+                                    : "N/A"
+                                }
+                            </TableCell> */}
                             {isAdmin && (
                                 <TableCell>
                                     <Box display="flex">

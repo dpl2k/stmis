@@ -17,7 +17,8 @@ import {
   DialogActions,
   IconButton,
   Snackbar,
-  Alert
+  Alert,
+  Chip
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DishTable from "../../components/DishTable";
@@ -29,7 +30,8 @@ import {
   updateDish,
   getAllDeliveryCategories,
   getAllDineInCategories,
-  getDropdownByModuleAndType
+  getDropdownByModuleAndType,
+  getAllRestaurants
 } from "../../api";
 
 const DishPage = () => {
@@ -49,6 +51,8 @@ const DishPage = () => {
   const [originalCategoryName, setOriginalCategoryName] = useState("");
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
+  const [RestaurantIds, setSelectedRestaurants] = useState([]);
+  const [allRestaurants, setAllRestaurants] = useState([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -71,11 +75,26 @@ const DishPage = () => {
       }
     };
     fetchDishes();
+    fetchRestaurants();
     fetchDeliveryCategories();
     fetchDineInCategories();
     fetchDineInTypes();
     fetchDeliveryTypes();
   }, [reloadTable]);
+
+  const fetchRestaurants = async () => {
+    try {
+      const data = await getAllRestaurants();
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get restaurants. Please try again.");
+      }
+      setAllRestaurants(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get restaurants. Please wait and try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
 
   const fetchDeliveryCategories = async () => {
     try {
@@ -177,6 +196,7 @@ const DishPage = () => {
     sellingDate: null,
     dineInCategoryId: null,
     deliveryCategoryId: null,
+    RestaurantIds: [],
   });
 
   const handleInputChange = (event) => {
@@ -191,6 +211,15 @@ const DishPage = () => {
     setDishForm({
       ...dishForm,
       [event.target.name]: event.target.checked,
+    });
+  };
+
+  const handleRestaurantChange = (event) => {
+    const updatedSelectedRestaurantIds = (event.target.name === 'RestaurantIds') ? event.target.value : dishForm.RestaurantIds;
+    setSelectedRestaurants(event.target.value);
+    setDishForm({
+      ...dishForm,
+      RestaurantIds: updatedSelectedRestaurantIds,
     });
   };
 
@@ -213,8 +242,10 @@ const DishPage = () => {
         sellingDate: dishToEdit.sellingDate,
         dineInCategoryId: dishToEdit.dineInCategory ? dishToEdit.dineInCategory.categoryId: null,
         deliveryCategoryId: dishToEdit.deliveryCategory ? dishToEdit.deliveryCategory.categoryId: null,
+        RestaurantIds: (dishToEdit.restaurants && dishToEdit.restaurants.length > 0) ? dishToEdit.restaurants.map(restaurant => restaurant.restaurantId) : [],
       });
       setOriginalCategoryName(dishToEdit.dishName);
+      setSelectedRestaurants((dishToEdit.restaurants && dishToEdit.restaurants.length > 0) ? dishToEdit.restaurants.map(restaurant => restaurant.restaurantId) : []);
       handleOpen();
       setEditDishId(dishId);
       setShowEditForm(true);
@@ -237,11 +268,13 @@ const DishPage = () => {
       sellingDate: null,
       dineInCategoryId: null,
       deliveryCategoryId: null,
+      RestaurantIds: [],
     });
   };
 
   const handleOpenAddNewDishDialog = () => {
     resetDishForm(); // Reset dishForm state to initial empty values
+    setSelectedRestaurants([]); // Clear the selected restaurants
     handleOpen(); // Open the dialog
     setShowEditForm(false); // Ensure edit form is not shown
   };
@@ -262,6 +295,7 @@ const DishPage = () => {
   };
 
   const handleSubmit = async (event) => {
+    console.table(dishForm);
     event.preventDefault();
     if (validateForm()) {
       try {
@@ -283,6 +317,7 @@ const DishPage = () => {
   };
 
   const handleEditSubmit = async (event) => {
+    console.table(dishForm);
     event.preventDefault();
     if (validateForm()) {
       try {
@@ -668,6 +703,39 @@ const DishPage = () => {
                         </Select>
                       </FormControl>
                     </Grid>
+                    <Grid item xs={12} sm={4} container display="flex" alignItems="center">
+                      <Typography variant="h7">Select Restaurants</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <TextField
+                        select
+                        required
+                        fullWidth
+                        name="RestaurantIds"
+                        value={RestaurantIds}
+                        onChange={handleRestaurantChange}
+                        SelectProps={{
+                          multiple: true,
+                          renderValue: (selected) => (
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                              {selected.map((id) => (
+                                <Chip 
+                                  key={id} 
+                                  label={allRestaurants.find((restaurant) => restaurant.restaurantId === id)?.name} 
+                                  style={{ margin: '2px' }}
+                                />
+                              ))}
+                            </div>
+                          ),
+                        }}
+                      >
+                        {allRestaurants.map((restaurant) => (
+                          <MenuItem key={restaurant.restaurantId} value={restaurant.restaurantId}>
+                            {restaurant.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
                   </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -1041,6 +1109,39 @@ const DishPage = () => {
                     ))}
                   </Select>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} container display="flex" alignItems="center">
+                <Typography variant="h7">Select Restaurants</Typography>
+              </Grid>
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  select
+                  required
+                  fullWidth
+                  name="RestaurantIds"
+                  value={RestaurantIds}
+                  onChange={handleRestaurantChange}
+                  SelectProps={{
+                    multiple: true,
+                    renderValue: (selected) => (
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {selected.map((id) => (
+                          <Chip
+                            key={id}
+                            label={allRestaurants.find((restaurant) => restaurant.restaurantId === id)?.name}
+                            style={{ margin: '2px' }}
+                          />
+                        ))}
+                      </div>
+                    ),
+                  }}
+                >
+                  {allRestaurants.map((restaurant) => (
+                    <MenuItem key={restaurant.restaurantId} value={restaurant.restaurantId}>
+                      {restaurant.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
             </Grid>
           </DialogContent>
