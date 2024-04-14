@@ -19,22 +19,22 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
         <TableContainer component={Paper} style={{ overflowX: "initial" }}>
             <Table>
                 <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-                    <TableRow style={{backgroundColor: '#3f51b5'}}>
+                    <TableRow style={{ backgroundColor: '#3f51b5' }}>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Image</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Dish Name</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Short Name</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>English Name</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Korean Name</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Description</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Allergy</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Price</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Type</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Delivery Type</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Status</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Selling Date</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>DineIn Category</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Dish Name</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Short Name</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>English Name</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Korean Name</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Description</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Allergy</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Price</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>DineIn Type</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Delivery Type</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Status</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Selling Date</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>DineIn Category</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Delivery Category</TableCell>
-                        <TableCell style={{fontWeight: '600', color: '#ffffff'}}>Assigned Restaurants</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Assigned Restaurants</TableCell>
                         {isAdmin && (
                             <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
                         )}
@@ -53,14 +53,14 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                             <TableCell>{dish.shortName ? dish.shortName : "N/A"}</TableCell>
                             <TableCell>{dish.englishName ? dish.englishName : "N/A"}</TableCell>
                             <TableCell>{dish.koreanName ? dish.koreanName : "N/A"}</TableCell>
-                            <TableCell>{dish.description ? dish.description: "N/A"}</TableCell>
+                            <TableCell>{dish.description ? dish.description : "N/A"}</TableCell>
                             <TableCell>{dish.allergy ? dish.allergy : "N/A"}</TableCell>
                             <TableCell>{dish.price}</TableCell>
                             <TableCell>{dish.dineInType ? dish.dineInType : "N/A"}</TableCell>
                             <TableCell>{dish.deliveryType ? dish.deliveryType : "N/A"}</TableCell>
                             <TableCell>{dish.isAvailable ? "In stock" : "Out of stock"}</TableCell>
                             <TableCell>{(dish.sellingDate !== null) ? new Date(dish.sellingDate).toISOString().split('T')[0] : "N/A"}</TableCell>
-                            <TableCell>{dish.dineInCategory ? dish.dineInCategory.categoryName: "N/A"}</TableCell>
+                            <TableCell>{dish.dineInCategory ? dish.dineInCategory.categoryName : "N/A"}</TableCell>
                             <TableCell>{dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</TableCell>
                             <TableCell>
                                 {dish.restaurants && dish.restaurants.length > 0
@@ -93,7 +93,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={isAdmin?15:14}
+                            colSpan={isAdmin ? 16 : 15}
                             count={dishes.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
