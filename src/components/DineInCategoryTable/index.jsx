@@ -16,9 +16,9 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
+        <TableContainer component={Paper}>
             <Table>
-                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Parent Category</TableCell>

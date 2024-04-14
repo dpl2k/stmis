@@ -14,7 +14,7 @@ const Redirector = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/stmis") {
+    if (location.pathname === "/") {
       navigate("/userpage");
     }
   }, [location, navigate]);
@@ -28,7 +28,7 @@ const App = () => {
       <Navbar />
       <Redirector />
       <Routes>
-        <Route path="/stmis" element={<UserPage />} />
+        <Route path="/" element={<UserPage />} />
         <Route path="/dishpage" element={<DishPage />} />
         <Route path="/restaurantpage" element={<RestaurantPage />} />
         <Route path="/dropdownpage" element={<DropdownPage />} />

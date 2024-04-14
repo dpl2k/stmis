@@ -16,9 +16,9 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
+        <TableContainer component={Paper}>
             <Table>
-                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Image</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Dish Name</TableCell>
