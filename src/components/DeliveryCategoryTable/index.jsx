@@ -16,9 +16,9 @@ const DeliveryCategoryTable = ({ deliveryCategories, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
             <Table>
-                <TableHead>
+                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Parent Category</TableCell>
