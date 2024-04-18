@@ -238,6 +238,14 @@ const UserPage = () => {
                                         <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
                                         <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
                                         <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            // onClick={() => addItemToOrder(dish)}
+                                            disabled={!dish.isAvailable}
+                                        >
+                                            Add to Cart
+                                        </Button>
                                     </CardContent>
                                 </Card>
                             </Grid>
