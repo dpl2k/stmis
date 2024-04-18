@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Box, TableFooter, TablePagination } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, Visibility } from '@mui/icons-material';
 
-const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
+const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -76,6 +76,11 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                                         <Tooltip title="Edit">
                                             <IconButton color="info" onClick={() => onEdit(dish.dishId)}>
                                                 <Edit />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="History">
+                                            <IconButton color="info" onClick={() => onHistory(dish.dishId)}>
+                                                <Visibility />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Delete">
