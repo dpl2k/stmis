@@ -8,13 +8,13 @@ import {
     InputLabel,
     Select,
     OutlinedInput,
-    // MenuItem,
+    MenuItem,
     Button
 } from "@mui/material";
 import ChangeLogTable from "../../components/ChangeLogTable";
 import {
-    getAllDishes,
-    getDeliveryMenu
+    getAllChangeLogs,
+    getByFilterChangeLogs
 } from "../../api";
 
 const ChangeLogPage = () => {
@@ -27,14 +27,23 @@ const ChangeLogPage = () => {
     const [selectedAction, setSelectedAction] = useState("");
     const [applyDisabled, setApplyDisabled] = useState(true);
     const [clearDisabled, setClearDisabled] = useState(true);
+    const [tables, setTables] = useState([]);
+    const [recordIds, setRecordIds] = useState([]);
+    const [actions, setActions] = useState([]);
 
     useEffect(() => {
         const fetchChangeLogs = async () => {
             try {
-                const data = await getAllDishes();
+                const data = await getAllChangeLogs();
                 if (data.statusCode !== 200) {
                     throw new Error("Failed to get changelogs. Please wait and try again.");
                 }
+                const tableNames = data.result.map(item => item.tableName);
+                setTables(tableNames);
+                const recordIds = data.result.map(item => item.recordId);
+                setRecordIds(recordIds);
+                const actions = data.result.map(item => item.action);
+                setActions(actions);
                 setChangeLogs(data.result);
             } catch (error) {
                 setSnackbarMessage("Failed to get changelogs. Please wait and try again.");
@@ -65,7 +74,7 @@ const ChangeLogPage = () => {
 
     const fetchAllChangeLogs = async () => {
         try {
-            const data = await getAllDishes();
+            const data = await getAllChangeLogs();
             if (data.statusCode !== 200) {
                 throw new Error("Failed to get changelogs. Please wait and try again.");
             }
@@ -79,7 +88,7 @@ const ChangeLogPage = () => {
 
     const handleApply = async () => {
         try {
-            const data = await getDeliveryMenu(selectedTable, selectedRecordId, selectedAction);
+            const data = await getByFilterChangeLogs(selectedTable, selectedRecordId, selectedAction);
             if (data.statusCode !== 200) {
                 throw new Error("Failed to get menu items");
             }
@@ -105,27 +114,27 @@ const ChangeLogPage = () => {
                                 onChange={(e) => setSelectedTable(e.target.value)}
                                 input={<OutlinedInput label="Table Name" />}
                             >
-                                {/* {tables.map((table) => (
-                                    <MenuItem value={table.name}>
-                                        {table.name}
+                                {Array.from(new Set(tables)).map((table) => (
+                                    <MenuItem key={table} value={table}>
+                                        {table}
                                     </MenuItem>
-                                ))} */}
+                                ))}
                             </Select>
                         </FormControl>
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
-                            <InputLabel id="RecordIdLabel">Record ID</InputLabel>
+                            <InputLabel id="RecordIdLabel">Dish ID</InputLabel>
                             <Select
                                 labelId="RecordIdLabel"
                                 id="recordId"
                                 value={selectedRecordId}
                                 onChange={(e) => setSelectedRecordId(e.target.value)}
-                                input={<OutlinedInput label="Record ID" />}
+                                input={<OutlinedInput label="Dish ID" />}
                             >
-                                {/* {recordIds.map(recordId => (
-                                    <MenuItem value={recordId.value}>
-                                        {recordId.name}
+                                {Array.from(new Set(recordIds)).map((recordId) => (
+                                    <MenuItem key={recordId}  value={recordId}>
+                                        {recordId}
                                     </MenuItem>
-                                ))} */}
+                                ))}
                             </Select>
                         </FormControl>
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
@@ -137,11 +146,11 @@ const ChangeLogPage = () => {
                                 onChange={(e) => setSelectedAction(e.target.value)}
                                 input={<OutlinedInput label="Action" />}
                             >
-                                {/* {actions.map(action => (
-                                    <MenuItem key={action.name} value={action.name}>
-                                        {action.name}
+                                {Array.from(new Set(actions)).map((action) => (
+                                    <MenuItem key={action} value={action}>
+                                        {action}
                                     </MenuItem>
-                                ))} */}
+                                ))}
                             </Select>
                         </FormControl>
                         <Button

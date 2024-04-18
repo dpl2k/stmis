@@ -47,10 +47,10 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
                         : dishes
                     ).map((dish, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{dish.dishId}</TableCell>
                             <TableCell>
                                 <img src={dish.imageUrl} alt={dish.dishName} style={{ width: '50px', height: '50px' }} />
                             </TableCell>
-                            <TableCell>{dish.dishId}</TableCell>
                             <TableCell>{dish.dishName}</TableCell>
                             <TableCell>{dish.shortName ? dish.shortName : "N/A"}</TableCell>
                             <TableCell>{dish.englishName ? dish.englishName : "N/A"}</TableCell>
