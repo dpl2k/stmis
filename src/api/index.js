@@ -65,6 +65,31 @@ export const getPOSMenu = async (restaurantId, type, categoryId) => {
     return response.json();
 }
 
+export const getByFilterChangeLogs = async (tableName, recordId, action) => {
+    let base_url = `${API_URL}/change-logs`;
+    const queryParams = [];
+    if (tableName) {
+        queryParams.push(`tableName=${tableName}`);
+    }
+    if (recordId) {
+        queryParams.push(`recordId=${recordId}`);
+    }
+    if (action) {
+        queryParams.push(`action=${action}`);
+    }
+
+    if (queryParams.length > 0) {
+        base_url += `?${queryParams.join("&")}`;
+    }
+    const response = await fetch(base_url);
+    return response.json();
+}
+
+export const getAllChangeLogs = async () => {
+    const response = await fetch(`${API_URL}/change-logs`);
+    return response.json();
+}
+
 export const addNewRestaurant = async (restaurant) => {
     const response = await fetch(`${API_URL}/restaurants`, {
         method: 'POST',
