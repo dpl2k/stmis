@@ -20,6 +20,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
             <Table>
                 <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Image</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Dish Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Short Name</TableCell>
@@ -49,6 +50,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
                             <TableCell>
                                 <img src={dish.imageUrl} alt={dish.dishName} style={{ width: '50px', height: '50px' }} />
                             </TableCell>
+                            <TableCell>{dish.dishId}</TableCell>
                             <TableCell>{dish.dishName}</TableCell>
                             <TableCell>{dish.shortName ? dish.shortName : "N/A"}</TableCell>
                             <TableCell>{dish.englishName ? dish.englishName : "N/A"}</TableCell>
@@ -98,7 +100,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={isAdmin ? 16 : 15}
+                            colSpan={isAdmin ? 17 : 16}
                             count={dishes.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

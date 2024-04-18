@@ -8,6 +8,7 @@ import DineInCategoryPage from './pages/DineInCategoryPage';
 import DeliveryCategoryPage from './pages/DeliveryCategoryPage';
 import POSPage from './pages/POSPage';
 import UserPage from './pages/UserPage';
+import ChangeLogPage from './pages/ChangeLogPage';
 import Navbar from './components/NavBar';
 
 const Redirector = () => {
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/deliverycategorypage" element={<DeliveryCategoryPage />} />
         <Route path="/pospage" element={<POSPage />} />
         <Route path="/userpage" element={<UserPage />} />
+        <Route path="/changelogpage" element={<ChangeLogPage />} />
       </Routes>
     </Router>
   );

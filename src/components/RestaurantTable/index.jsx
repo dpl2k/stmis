@@ -20,6 +20,7 @@ const RestaurantTable = ({ restaurants, onDelete, onEdit }) => {
             <Table>
                 <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Restaurant Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
                     </TableRow>
@@ -30,6 +31,7 @@ const RestaurantTable = ({ restaurants, onDelete, onEdit }) => {
                         : restaurants
                     ).map((restaurant, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{restaurant.restaurantId}</TableCell>
                             <TableCell>{restaurant.name}</TableCell>
                             <TableCell>
                                 <Box display="flex">
@@ -52,7 +54,7 @@ const RestaurantTable = ({ restaurants, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={2}
+                            colSpan={3}
                             count={restaurants.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

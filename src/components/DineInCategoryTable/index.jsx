@@ -20,6 +20,7 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
             <Table>
                 <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Parent Category</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
@@ -31,6 +32,7 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
                         : dineInCategories
                     ).map((dineInCategory, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{dineInCategory.categoryId}</TableCell>
                             <TableCell>{dineInCategory.categoryName}</TableCell>
                             <TableCell>{dineInCategory.parentCategory ? dineInCategory.parentCategory.categoryName : "N/A"}</TableCell>
                             <TableCell>
@@ -54,7 +56,7 @@ const DineInCategoryTable = ({ dineInCategories, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={3}
+                            colSpan={4}
                             count={dineInCategories.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
