@@ -24,6 +24,7 @@ import {
     getAllDineInCategories,
     getPOSMenu
 } from "../../api";
+import "../POSPage/POSPage.css";
 
 const POSPage = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -156,7 +157,7 @@ const POSPage = () => {
         <Box p={3} pt={1}>
             <h1>POS Menu Page</h1>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                     <Box mb={4} style={{ backgroundColor: "lightyellow" }}>
                         <Typography variant="h4" style={{ color:"red"}}>Payment section</Typography>
                         <Box mt={2}>
@@ -187,7 +188,7 @@ const POSPage = () => {
                         <Typography variant="h6">Total Amount: ${paymentAmount}</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={9}>
                     <Box mb={4} display="flex" alignItems="center">
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
                             <InputLabel id="restaurant-label">Restaurant</InputLabel>
@@ -271,22 +272,24 @@ const POSPage = () => {
                     <Grid container spacing={2}>
                         {dishes.length > 0 ? dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
-                                <Card>
+                                <Card className="fullHeightCard">
                                     <CardMedia
                                         component="img"
-                                        height="200"
-                                        width="200"
+                                        height="300"
+                                        width="300"
                                         image={dish.imageUrl}
                                         alt={dish.dishName}
                                     />
-                                    <CardContent>
-                                        <Typography variant="h5">{dish.dishName}</Typography>
-                                        <Typography variant="body1">{dish.description}</Typography>
-                                        <Typography variant="body1"><b>Type:</b> {dish.dineInType ? dish.dineInType : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Category:</b> {dish.dineInCategory ? dish.dineInCategory.categoryName : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
-                                        <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
+                                    <CardContent className="content">
+                                        <div>
+                                            <Typography className="typo" variant="h5" style={{ fontWeight: 600 }}>{dish.dishName}</Typography>
+                                            <Typography className="typo" variant="body1">{dish.description}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Type:</b> {dish.dineInType ? dish.dineInType : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Category:</b> {dish.dineInCategory ? dish.dineInCategory.categoryName : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Price:</b> {dish.price}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
+                                        </div>
                                         <Button
                                             variant="contained"
                                             color="primary"

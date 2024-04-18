@@ -1,0 +1,19 @@
+.fullHeightCard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.fullHeightCard .MuiCardContent-root {
+    flex-grow: 1;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.typo {
+    margin-bottom: 10px;
+}
