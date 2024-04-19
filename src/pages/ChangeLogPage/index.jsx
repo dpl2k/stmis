@@ -124,13 +124,13 @@ const ChangeLogPage = () => {
                             </Select>
                         </FormControl>
                         <FormControl fullWidth style={{ marginRight: '8px' }}>
-                            <InputLabel id="RecordIdLabel">Dish ID</InputLabel>
+                            <InputLabel id="RecordIdLabel">Record ID</InputLabel>
                             <Select
                                 labelId="RecordIdLabel"
                                 id="recordId"
                                 value={selectedRecordId}
                                 onChange={(e) => setSelectedRecordId(e.target.value)}
-                                input={<OutlinedInput label="Dish ID" />}
+                                input={<OutlinedInput label="Record ID" />}
                             >
                                 {Array.from(new Set(recordIds)).map((recordId) => (
                                     <MenuItem key={recordId}  value={recordId}>
