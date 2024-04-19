@@ -16,10 +16,11 @@ const DropdownTable = ({ dropdowns, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
+        <TableContainer component={Paper}>
             <Table>
-                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Value</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Type</TableCell>
@@ -35,6 +36,7 @@ const DropdownTable = ({ dropdowns, onDelete, onEdit }) => {
                         : dropdowns
                     ).map((dropdown, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{dropdown.dropdownId}</TableCell>
                             <TableCell>{dropdown.name}</TableCell>
                             <TableCell>{dropdown.value}</TableCell>
                             <TableCell>{dropdown.type}</TableCell>
@@ -62,7 +64,7 @@ const DropdownTable = ({ dropdowns, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={7}
+                            colSpan={8}
                             count={dropdowns.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

@@ -94,6 +94,14 @@ const Navbar = () => {
               Dishes Configure
             </NavLink>
           </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <NavLink
+              to="/changelogpage"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              Change Log Page
+            </NavLink>
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

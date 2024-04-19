@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Box, TableFooter, TablePagination } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, Visibility } from '@mui/icons-material';
 
-const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
+const DishTable = ({ dishes, isAdmin, onDelete, onEdit, onHistory }) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -16,10 +16,11 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
+        <TableContainer component={Paper}>
             <Table>
-                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Image</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Dish Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Short Name</TableCell>
@@ -46,6 +47,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                         : dishes
                     ).map((dish, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{dish.dishId}</TableCell>
                             <TableCell>
                                 <img src={dish.imageUrl} alt={dish.dishName} style={{ width: '50px', height: '50px' }} />
                             </TableCell>
@@ -78,6 +80,11 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
+                                        <Tooltip title="History">
+                                            <IconButton color="info" onClick={() => onHistory(dish.dishId)}>
+                                                <Visibility />
+                                            </IconButton>
+                                        </Tooltip>
                                         <Tooltip title="Delete">
                                             <IconButton color="error" onClick={() => onDelete(dish.dishId)}>
                                                 <Delete />
@@ -93,7 +100,7 @@ const DishTable = ({ dishes, isAdmin, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={isAdmin ? 16 : 15}
+                            colSpan={isAdmin ? 17 : 16}
                             count={dishes.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

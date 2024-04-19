@@ -22,6 +22,7 @@ import {
     getAllDeliveryCategories,
     getDropdownByModuleAndType
 } from "../../api";
+import "../UserPage/UserPage.css";
 
 const UserPage = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -222,22 +223,31 @@ const UserPage = () => {
                     <Grid container spacing={2}>
                         {dishes.length > 0 ? dishes.map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
-                                <Card>
+                                <Card className="fullHeightCard">
                                     <CardMedia
                                         component="img"
-                                        height="200"
-                                        width="200"
+                                        height="300"
+                                        width="300"
                                         image={dish.imageUrl}
                                         alt={dish.dishName}
                                     />
-                                    <CardContent>
-                                        <Typography variant="h5">{dish.dishName}</Typography>
-                                        <Typography variant="body1">{dish.description}</Typography>
-                                        <Typography variant="body1"><b>Type:</b> {dish.deliveryType ? dish.deliveryType : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Category:</b> {dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Price:</b> {dish.price}</Typography>
-                                        <Typography variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
-                                        <Typography variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
+                                    <CardContent className="content">
+                                        <div>
+                                            <Typography className="typo" variant="h5" style={{ fontWeight: 600 }}>{dish.dishName}</Typography>
+                                            <Typography className="typo" variant="body1">{dish.description}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Type:</b> {dish.deliveryType ? dish.deliveryType : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Category:</b> {dish.deliveryCategory ? dish.deliveryCategory.categoryName : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Price:</b> {dish.price}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Allergy:</b> {dish.allergy ? dish.allergy : "N/A"}</Typography>
+                                            <Typography className="typo" variant="body1"><b>Status:</b> {dish.isAvailable ? "In stock" : "Out of stock"}</Typography>
+                                        </div>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={!dish.isAvailable}
+                                        >
+                                            Add to Cart
+                                        </Button>
                                     </CardContent>
                                 </Card>
                             </Grid>

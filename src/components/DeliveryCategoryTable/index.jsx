@@ -16,10 +16,11 @@ const DeliveryCategoryTable = ({ deliveryCategories, onDelete, onEdit }) => {
     };
 
     return (
-        <TableContainer component={Paper} style={{ overflowX: "initial" }}>
+        <TableContainer component={Paper}>
             <Table>
-                <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Name</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Parent Category</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Actions</TableCell>
@@ -31,6 +32,7 @@ const DeliveryCategoryTable = ({ deliveryCategories, onDelete, onEdit }) => {
                         : deliveryCategories
                     ).map((deliveryCategory, index) => (
                         <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#f3f3f3' : 'white' }}>
+                            <TableCell>{deliveryCategory.categoryId}</TableCell>
                             <TableCell>{deliveryCategory.categoryName}</TableCell>
                             <TableCell>{deliveryCategory.parentCategory ? deliveryCategory.parentCategory.categoryName : "N/A"}</TableCell>
                             <TableCell>
@@ -54,7 +56,7 @@ const DeliveryCategoryTable = ({ deliveryCategories, onDelete, onEdit }) => {
                     <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, { label: 'All', value: -1 }]}
-                            colSpan={3}
+                            colSpan={4}
                             count={deliveryCategories.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

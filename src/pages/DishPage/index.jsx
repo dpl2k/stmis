@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'; 
 import {
   Button,
   Typography,
@@ -250,6 +251,11 @@ const DishPage = () => {
       setEditDishId(dishId);
       setShowEditForm(true);
     }
+  };
+
+  const navigate = useNavigate();
+  const handleHistory = (dishId) => {
+    navigate(`/dishhistorypage/${dishId}`);
   };
 
   const resetDishForm = () => {
@@ -760,7 +766,7 @@ const DishPage = () => {
           </Grid>
         </Grid>
       </Box>
-      <DishTable dishes={dishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} />
+      <DishTable dishes={dishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} onHistory={handleHistory}/>
       {showEditForm && (
         <Dialog open={open} 
           onClose={(event, reason) => {
