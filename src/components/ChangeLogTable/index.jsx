@@ -66,7 +66,7 @@ const ChangeLogTable = ({ changelogs, page, setPage }) => {
                 <TableHead>
                     <TableRow style={{ backgroundColor: '#3f51b5' }}>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Change Log ID</TableCell>
-                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Dish ID</TableCell>
+                        <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Record ID</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Table</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Action</TableCell>
                         <TableCell style={{ fontWeight: '600', color: '#ffffff' }}>Created On</TableCell>
