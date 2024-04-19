@@ -30,6 +30,7 @@ const ChangeLogPage = () => {
     const [tables, setTables] = useState([]);
     const [recordIds, setRecordIds] = useState([]);
     const [actions, setActions] = useState([]);
+    const [page, setPage] = useState(0);
 
     useEffect(() => {
         const fetchChangeLogs = async () => {
@@ -93,6 +94,7 @@ const ChangeLogPage = () => {
                 throw new Error("Failed to get menu items");
             }
             setChangeLogs(data.result);
+            setPage(0);
         } catch (error) {
             setSnackbarMessage("Failed to get menu items. Please try again.");
             setSnackbarSeverity("error");
@@ -180,7 +182,7 @@ const ChangeLogPage = () => {
                     </Box>
                 </Grid>
             </Grid>
-            <ChangeLogTable changelogs={changelogs} />
+            <ChangeLogTable changelogs={changelogs} page={page} setPage={setPage}/>
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={5000}

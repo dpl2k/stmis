@@ -1,11 +1,33 @@
-import * as React from 'react';
+import React , { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableFooter, TablePagination } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import "../ChangeLogTable/ChangeLogTable.css";
+import { getAllDeliveryCategories, getAllDineInCategories } from '../../api';
 
-const ChangeLogTable = ({ changelogs }) => {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+const ChangeLogTable = ({ changelogs, page, setPage }) => {
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [deliveryCategories, setDeliveryCategories] = useState([]);
+    const [dineInCategories, setDineInCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const deliveryData = await getAllDeliveryCategories();
+                if (deliveryData.statusCode !== 200) {
+                    throw new Error("Failed to get restaurants");
+                }
+                setDeliveryCategories(deliveryData.result);
+                const dineInData = await getAllDineInCategories();
+                if (dineInData.statusCode !== 200) {
+                    throw new Error("Failed to get dishes");
+                }
+                setDineInCategories(dineInData.result);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -66,17 +88,26 @@ const ChangeLogTable = ({ changelogs }) => {
                                 <TableCell>
                                     {log.changes.map((change, index) => (
                                         <div key={index} className='changecell'>
-                                            <b>{change.columnName === 'IsAvailable' ? 'Status' : change.columnName.replace(/([A-Z])/g, ' $1').trim()}:</b>
+                                            <b>{
+                                                change.columnName === 'IsAvailable' ? 'Status' :
+                                                    change.columnName === 'DeliveryCategoryId' ? 'Delivery Category' :
+                                                        change.columnName === 'DineInCategoryId' ? 'Dine In Category' :
+                                                            change.columnName.replace(/([A-Z])/g, ' $1').trim()
+                                            }:</b>
                                             <div>
                                                 {change.columnName === 'SellingDate' && change.oldValue ? new Date(change.oldValue).toISOString().split('T')[0] :
                                                     change.columnName === 'IsAvailable' ? (change.oldValue === 'True' ? 'In stock' : 'Out of stock') :
-                                                        change.oldValue ? change.oldValue : "N/A"}
+                                                        change.columnName === 'DeliveryCategoryId' ? (change.oldValue ? deliveryCategories.find(cat => cat.categoryId.toString() === change.oldValue)?.categoryName : "N/A") :
+                                                            change.columnName === 'DineInCategoryId' ? (change.oldValue ? dineInCategories.find(cat => cat.categoryId.toString() === change.oldValue)?.categoryName : "N/A") :
+                                                                change.oldValue ? change.oldValue : "N/A"}
                                             </div>
                                             <ArrowForwardIcon fontSize='small' />
                                             <div>
                                                 {change.columnName === 'SellingDate' && change.newValue ? new Date(change.newValue).toISOString().split('T')[0] :
                                                     change.columnName === 'IsAvailable' ? (change.newValue === 'True' ? 'In stock' : 'Out of stock') :
-                                                        change.newValue ? change.newValue : "N/A"}
+                                                        change.columnName === 'DeliveryCategoryId' ? (change.newValue ? deliveryCategories.find(cat => cat.categoryId.toString() === change.newValue)?.categoryName : "N/A") :
+                                                            change.columnName === 'DineInCategoryId' ? (change.newValue ? dineInCategories.find(cat => cat.categoryId.toString() === change.newValue)?.categoryName : "N/A") :
+                                                                change.newValue ? change.newValue : "N/A"}
                                             </div>
                                         </div>
                                     ))}

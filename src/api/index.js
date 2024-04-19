@@ -25,6 +25,30 @@ export const getDishesByRestaurantId = async (restaurantId) => {
     return response.json();
 }
 
+export const addNewRestaurant = async (restaurant) => {
+    const response = await fetch(`${API_URL}/restaurants`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(restaurant),
+    });
+    return response.json();
+};
+
+export const updateRestaurant = async (restaurantId, restaurantData) => {
+    const response = await fetch(`${API_URL}/restaurants/${restaurantId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(restaurantData),
+    });
+    return response.json();
+};
+
+export const deleteRestaurant = async (restaurantId) => {
+    const response = await fetch(`${API_URL}/restaurants/${restaurantId}`, { method: 'DELETE' });
+    return response.json();
+};
+
+//menu
 export const getDeliveryMenu = async (restaurantId, type, categoryId) => {
     let base_url = `${API_URL}/dishes`;
     const queryParams = [];
@@ -65,6 +89,7 @@ export const getPOSMenu = async (restaurantId, type, categoryId) => {
     return response.json();
 }
 
+//changelogs
 export const getByFilterChangeLogs = async (tableName, recordId, action) => {
     let base_url = `${API_URL}/change-logs`;
     const queryParams = [];
@@ -90,28 +115,10 @@ export const getAllChangeLogs = async () => {
     return response.json();
 }
 
-export const addNewRestaurant = async (restaurant) => {
-    const response = await fetch(`${API_URL}/restaurants`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(restaurant),
-    });
+export const getChangeLogsbyRecordId = async (recordId) => {
+    const response = await fetch(`${API_URL}/change-logs?recordId=${recordId}`);
     return response.json();
-};
-
-export const updateRestaurant = async (restaurantId, restaurantData) => {
-    const response = await fetch(`${API_URL}/restaurants/${restaurantId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(restaurantData),
-    });
-    return response.json();
-};
-
-export const deleteRestaurant = async (restaurantId) => {
-    const response = await fetch(`${API_URL}/restaurants/${restaurantId}`, { method: 'DELETE' });
-    return response.json();
-};
+}
 
 //Dropdowns
 export const getAllDropdowns = async () => {
