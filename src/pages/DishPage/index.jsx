@@ -19,7 +19,9 @@ import {
   IconButton,
   Snackbar,
   Alert,
-  Chip
+  Chip,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DishTable from "../../components/DishTable";
@@ -55,6 +57,8 @@ const DishPage = () => {
   const [RestaurantIds, setSelectedRestaurants] = useState([]);
   const [allRestaurants, setAllRestaurants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -360,28 +364,36 @@ const DishPage = () => {
         <Grid
           container
           spacing={1}
-          alignItems={"center"}
           justifyContent={"flex-end"}
         >
-          <Grid item>
-            <Box display="flex" gap={2}>
-              <TextField
-                value={searchTerm}
-                onChange={handleSearchChange}
-                label="Search for dish"
-                variant="outlined"
-              />
-              <Button variant="contained" color="success" onClick={handleOpenAddNewDishDialog}>
-                Add New Dish
-              </Button>
+          <Grid item xs={12} md={4}>
+            <Box display="flex" gap={1} flexDirection={isMobile ? 'column' : 'row'} alignItems="center">
+              <FormControl fullWidth style={{ width: '100%' }}>
+                <TextField
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  label="Search for dish"
+                  variant="outlined"
+                />
+              </FormControl>
               <Button 
                 variant="contained" 
                 color="secondary" 
                 onClick={() => {
                   setSearchTerm("");
                 }}
+                disabled={searchTerm === ""}
+                style={{ width: '100%', height: '50%', padding: '15px' }}
               >
                 Clear
+              </Button>
+              <Button 
+                variant="contained" 
+                color="success" 
+                onClick={handleOpenAddNewDishDialog}
+                style={{ width: '100%', paddingTop: '15px', paddingBottom: '15px' }}
+              >
+                Add New Dish
               </Button>
 
               <Dialog open={open} 

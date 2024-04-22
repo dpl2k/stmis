@@ -13,7 +13,9 @@ import {
     Card,
     CardContent,
     Typography,
-    CardMedia
+    CardMedia,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 import { 
     getAllRestaurants, 
@@ -37,6 +39,8 @@ const UserPage = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -140,8 +144,8 @@ const UserPage = () => {
             <h1>Delivery Menu Page</h1>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={12}>
-                    <Box mb={4} display="flex" alignItems="center">
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                    <Box mb={4} gap={1} display="flex" alignItems="center" flexDirection={isMobile ? 'column' : 'row'}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <InputLabel id="restaurant-label">Restaurant</InputLabel>
                             <Select
                                 labelId="restaurant-label"
@@ -159,7 +163,7 @@ const UserPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <InputLabel id="deliveryTypeLabel">Type</InputLabel>
                             <Select
                                 labelId="deliveryTypeLabel"
@@ -177,7 +181,7 @@ const UserPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <InputLabel id="deliveryCategoryLabel">Category</InputLabel>
                             <Select
                                 labelId="deliveryCategoryLabel"
@@ -200,14 +204,14 @@ const UserPage = () => {
                             color="primary"
                             onClick={handleApply}
                             disabled={applyDisabled}
-                            style={{ marginRight: '8px', height: '100%', padding: '15px' }}
+                            style={{ width: '100%', height: '100%', padding: '15px' }}
                         >
                             Search
                         </Button>
                         <Button
                             variant="contained"
                             color="secondary"
-                            style={{ height: '100%', padding: '15px' }}
+                            style={{ width: '100%', height: '100%', padding: '15px' }}
                             onClick={() => {
                                 setSelectedRestaurant("");
                                 setSelectedDeliveryType("");

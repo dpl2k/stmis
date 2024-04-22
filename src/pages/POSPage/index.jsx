@@ -15,7 +15,9 @@ import {
     Typography,
     CardMedia,
     IconButton, 
-    TextField
+    TextField,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { 
@@ -43,6 +45,8 @@ const POSPage = () => {
     const [orderItems, setOrderItems] = useState([]);
     const [paymentAmount, setPaymentAmount] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -191,8 +195,8 @@ const POSPage = () => {
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                    <Box mb={4} display="flex" alignItems="center">
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                    <Box mb={4} display="flex" gap={1} alignItems="center" flexDirection={isMobile ? 'column' : 'row'}>
+                        <FormControl fullWidth style={{ width: '100%'}}>
                             <InputLabel id="restaurant-label">Restaurant</InputLabel>
                             <Select
                                 labelId="restaurant-label"
@@ -210,7 +214,7 @@ const POSPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <InputLabel id="dineInTypeLabel">Type</InputLabel>
                             <Select
                                 labelId="dineInTypeLabel"
@@ -228,7 +232,7 @@ const POSPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <InputLabel id="dineInCategoryLabel">Category</InputLabel>
                             <Select
                                 labelId="dineInCategoryLabel"
@@ -246,7 +250,7 @@ const POSPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                        <FormControl fullWidth style={{ width: '100%' }}>
                             <TextField
                                 label="Search for dish"
                                 variant="outlined"
@@ -259,14 +263,14 @@ const POSPage = () => {
                             color="primary"
                             onClick={handleApply}
                             disabled={applyDisabled}
-                            style={{ marginRight: '8px', height: '100%', padding: '15px' }}
+                            style={{ width: '100%', height: '100%', padding: '15px' }}
                         >
                             Search
                         </Button>
                         <Button
                             variant="contained"
                             color="secondary"
-                            style={{ height: '100%', padding: '15px' }}
+                            style={{ width: '100%', height: '100%', padding: '15px' }}
                             onClick={() => {
                                 setSelectedRestaurant("");
                                 setSelectedDineInCategory("");
