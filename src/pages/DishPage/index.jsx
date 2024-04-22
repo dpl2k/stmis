@@ -54,6 +54,7 @@ const DishPage = () => {
   const [open, setOpen] = useState(false);
   const [RestaurantIds, setSelectedRestaurants] = useState([]);
   const [allRestaurants, setAllRestaurants] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -344,6 +345,13 @@ const DishPage = () => {
     }
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredDishes = dishes.filter(dish =>
+    dish.dishName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Box p={3} pt={1}>
@@ -357,8 +365,23 @@ const DishPage = () => {
         >
           <Grid item>
             <Box display="flex" gap={2}>
+              <TextField
+                value={searchTerm}
+                onChange={handleSearchChange}
+                label="Search for dish"
+                variant="outlined"
+              />
               <Button variant="contained" color="success" onClick={handleOpenAddNewDishDialog}>
                 Add New Dish
+              </Button>
+              <Button 
+                variant="contained" 
+                color="secondary" 
+                onClick={() => {
+                  setSearchTerm("");
+                }}
+              >
+                Clear
               </Button>
 
               <Dialog open={open} 
@@ -766,7 +789,7 @@ const DishPage = () => {
           </Grid>
         </Grid>
       </Box>
-      <DishTable dishes={dishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} onHistory={handleHistory}/>
+      <DishTable dishes={filteredDishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} onHistory={handleHistory}/>
       {showEditForm && (
         <Dialog open={open} 
           onClose={(event, reason) => {

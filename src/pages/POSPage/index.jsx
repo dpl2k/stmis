@@ -14,7 +14,8 @@ import {
     CardContent,
     Typography,
     CardMedia,
-    IconButton
+    IconButton, 
+    TextField
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { 
@@ -41,6 +42,7 @@ const POSPage = () => {
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     const [orderItems, setOrderItems] = useState([]);
     const [paymentAmount, setPaymentAmount] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,14 +63,14 @@ const POSPage = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedRestaurant || selectedDineInType || selectedDineInCategory) {
+        if (selectedRestaurant || selectedDineInType || selectedDineInCategory || searchTerm) {
             setApplyDisabled(false);
             setClearDisabled(false);
         } else {
             setApplyDisabled(true);
             setClearDisabled(true);
         }
-    }, [selectedRestaurant, selectedDineInType, selectedDineInCategory]);
+    }, [selectedRestaurant, selectedDineInType, selectedDineInCategory, searchTerm]);
 
     const fetchDineInCategories = async () => {
         try {
@@ -244,6 +246,14 @@ const POSPage = () => {
                                 ))}
                             </Select>
                         </FormControl>
+                        <FormControl fullWidth style={{ marginRight: '8px' }}>
+                            <TextField
+                                label="Search for dish"
+                                variant="outlined"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </FormControl>
                         <Button
                             variant="contained"
                             color="primary"
@@ -262,6 +272,7 @@ const POSPage = () => {
                                 setSelectedDineInCategory("");
                                 setSelectedDineInType("");
                                 setDishes([]);
+                                setSearchTerm("");
                                 fetchAllDishes();
                             }}
                             disabled={clearDisabled}
@@ -270,7 +281,7 @@ const POSPage = () => {
                         </Button>
                     </Box>
                     <Grid container spacing={2}>
-                        {dishes.length > 0 ? dishes.map((dish) => (
+                        {dishes.length > 0 ? dishes.filter(dish => dish.dishName.toLowerCase().includes(searchTerm.toLowerCase())).map((dish) => (
                             <Grid item key={dish.dishId} xs={12} sm={6} md={4} lg={3}>
                                 <Card className="fullHeightCard">
                                     <CardMedia
