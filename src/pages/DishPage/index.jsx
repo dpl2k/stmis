@@ -21,7 +21,8 @@ import {
   Alert,
   Chip,
   useMediaQuery,
-  useTheme
+  useTheme,
+  OutlinedInput
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DishTable from "../../components/DishTable";
@@ -34,7 +35,8 @@ import {
   getAllDeliveryCategories,
   getAllDineInCategories,
   getDropdownByModuleAndType,
-  getAllRestaurants
+  getAllRestaurants,
+  getDishesByRestaurantId
 } from "../../api";
 
 const DishPage = () => {
@@ -56,7 +58,11 @@ const DishPage = () => {
   const [open, setOpen] = useState(false);
   const [RestaurantIds, setSelectedRestaurants] = useState([]);
   const [allRestaurants, setAllRestaurants] = useState([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState("");
+  const [applyDisabled, setApplyDisabled] = useState(true);
+  const [clearDisabled, setClearDisabled] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -87,6 +93,16 @@ const DishPage = () => {
     fetchDineInTypes();
     fetchDeliveryTypes();
   }, [reloadTable]);
+
+  useEffect(() => {
+    if (selectedRestaurant || searchTerm) {
+      setApplyDisabled(false);
+      setClearDisabled(false);
+    } else {
+      setApplyDisabled(true);
+      setClearDisabled(true);
+    }
+  }, [selectedRestaurant, searchTerm]);
 
   const fetchRestaurants = async () => {
     try {
@@ -158,6 +174,19 @@ const DishPage = () => {
     }
   };
 
+  const fetchAllDishes = async () => {
+    try {
+      const data = await getAllDishes();
+      if (data.statusCode !== 200) {
+        throw new Error("Failed to get dishes. Please wait and try again.");
+      } 
+      setDishes(data.result);
+    } catch (error) {
+      setSnackbarMessage("Failed to get dishes. Please wait and try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
 
   const handleDelete = (dishId) => {
     setSelectedDish(dishId);
@@ -351,11 +380,27 @@ const DishPage = () => {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setPage(0);
   };
 
   const filteredDishes = dishes.filter(dish =>
     dish.dishName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleApply = async () => {
+        try {
+            const data = await getDishesByRestaurantId(selectedRestaurant);
+            if (data.statusCode !== 200) {
+                throw new Error("Failed to get menu items");
+            }
+            setDishes(data.result);
+            setPage(0);
+        } catch (error) {
+            setSnackbarMessage("Failed to get menu items. Please try again.");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+        }
+    };
 
   return (
     <Box p={3} pt={1}>
@@ -366,8 +411,26 @@ const DishPage = () => {
           spacing={1}
           justifyContent={"flex-end"}
         >
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={8}>
             <Box display="flex" gap={1} flexDirection={isMobile ? 'column' : 'row'} alignItems="center">
+              <FormControl fullWidth style={{ width: '100%'}}>
+                  <InputLabel id="restaurant-label">Restaurant</InputLabel>
+                  <Select
+                      labelId="restaurant-label"
+                      value={selectedRestaurant}
+                      onChange={(e) => setSelectedRestaurant(e.target.value)}
+                      input={<OutlinedInput label="Restaurant" />}
+                  >
+                      {allRestaurants.map((restaurant) => (
+                          <MenuItem
+                              key={restaurant.restaurantId}
+                              value={restaurant.restaurantId}
+                          >
+                              {restaurant.name}
+                          </MenuItem>
+                      ))}
+                  </Select>
+              </FormControl>
               <FormControl fullWidth style={{ width: '100%' }}>
                 <TextField
                   value={searchTerm}
@@ -376,13 +439,25 @@ const DishPage = () => {
                   variant="outlined"
                 />
               </FormControl>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleApply}
+                disabled={applyDisabled}
+                style={{ width: '100%', height: '100%', padding: '15px' }}
+              >
+                  Search
+              </Button>
               <Button 
                 variant="contained" 
                 color="secondary" 
                 onClick={() => {
                   setSearchTerm("");
+                  setSelectedRestaurant("");
+                  setDishes([]);
+                  fetchAllDishes();
                 }}
-                disabled={searchTerm === ""}
+                disabled={clearDisabled}
                 style={{ width: '100%', height: '50%', padding: '15px' }}
               >
                 Clear
@@ -391,9 +466,10 @@ const DishPage = () => {
                 variant="contained" 
                 color="success" 
                 onClick={handleOpenAddNewDishDialog}
+                title="Add new Dish"
                 style={{ width: '100%', paddingTop: '15px', paddingBottom: '15px' }}
               >
-                Add New Dish
+                New Dish
               </Button>
 
               <Dialog open={open} 
@@ -801,7 +877,7 @@ const DishPage = () => {
           </Grid>
         </Grid>
       </Box>
-      <DishTable dishes={filteredDishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} onHistory={handleHistory}/>
+      <DishTable dishes={filteredDishes} isAdmin={true} onDelete={handleDelete} onEdit={handleEdit} onHistory={handleHistory} page={page} setPage={setPage}/>
       {showEditForm && (
         <Dialog open={open} 
           onClose={(event, reason) => {
